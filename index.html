@@ -782,7 +782,6 @@ gantt.templates.task_text = (start, end, task) => {
 };
 
 /* ── Tooltips ── */
-gantt.plugins({ tooltip: true });
 gantt.templates.tooltip_text = (start, end, task) => {
   if (task.type === gantt.config.types.project) {
     return `<div class="gantt-tooltip">
@@ -822,7 +821,6 @@ gantt.config.link_arrow_size     = 6;
 gantt.config.scales              = ZOOM_CONFIGS.quarter.scales;
 gantt.config.min_column_width    = 40;
 
-gantt.addMarker({ start_date: new Date(), css: "gantt_today_marker", text: "Today" });
 
 /* ═══════════════════════════════════════════════════════
    VIEW SWITCHING
@@ -914,6 +912,8 @@ async function refreshData() {
 
 /* INIT */
 gantt.init("gantt");
+// Today marker via CSS - added after init
+try { gantt.addMarker({ start_date: new Date(), css: "gantt_today_marker", text: "Today" }); } catch(e) {}
 
 (async function() {
   try {
