@@ -1,930 +1,1099 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hannah Solar – Project Gantt</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hannah Solar — Project Gantt</title>
 
-<!-- DHTMLX Gantt Free (GPL) -->
-<link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css"/>
-<script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+  <!-- DHTMLX Gantt (GPL) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dhtmlx-gantt/8.0.6/dhtmlxgantt.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dhtmlx-gantt/8.0.6/dhtmlxgantt.js"></script>
 
-<!-- Zoho Creator JS SDK -->
-<script src="https://js.zohostatic.com/creator/widgets/version/2.0/widgetsdk/ZohoCreator.min.js"></script>
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:          #0d1117;
+      --surface:     #161b22;
+      --surface2:    #1c2330;
+      --border:      #30363d;
+      --accent:      #f0a500;
+      --accent2:     #e8c44a;
+      --green:       #3fb950;
+      --blue:        #58a6ff;
+      --red:         #f85149;
+      --muted:       #8b949e;
+      --text:        #e6edf3;
+      --text-dim:    #c9d1d9;
+      --font-ui:     'DM Sans', sans-serif;
+      --font-mono:   'JetBrains Mono', monospace;
+      --radius:      6px;
+      --header-h:    56px;
+      --toolbar-h:   44px;
+    }
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:           #0f1117;
-    --surface:      #181c27;
-    --surface2:     #1e2335;
-    --border:       #2a3050;
-    --border-light: #333b5a;
-    --text:         #e8ecf4;
-    --text-muted:   #6b7899;
-    --text-dim:     #4a5270;
-    --accent:       #f5a623;
-    --accent2:      #3dd68c;
-    --accent3:      #5b8ef0;
-    --danger:       #f05b5b;
-    --phase-bg:     #1a2240;
-    --milestone-clr:#f5a623;
-    --font:         'DM Sans', sans-serif;
-    --mono:         'DM Mono', monospace;
-    --radius:       6px;
-    --header-h:     56px;
-    --toolbar-h:    48px;
-  }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      overflow: hidden;
+    }
 
-  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
-  #app { display: flex; flex-direction: column; height: 100vh; }
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    #header {
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      position: relative;
+      z-index: 100;
+    }
 
-  /* ── Header ── */
-  #header {
-    height: var(--header-h);
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px; flex-shrink: 0;
-  }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon {
-    width: 28px; height: 28px; background: var(--accent);
-    clip-path: polygon(50% 0%, 100% 100%, 0% 100%); flex-shrink: 0;
-  }
-  .logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
-  .logo-text span { color: var(--accent); }
+    #header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-  /* ── Toggle ── */
-  .view-toggle {
-    display: flex; gap: 2px; background: var(--bg);
-    border: 1px solid var(--border); border-radius: var(--radius); padding: 3px;
-  }
-  .view-toggle button {
-    background: transparent; border: none; color: var(--text-muted);
-    font-family: var(--font); font-size: 12px; font-weight: 500;
-    padding: 5px 14px; border-radius: 4px; cursor: pointer; transition: all 0.15s;
-    letter-spacing: 0.2px;
-  }
-  .view-toggle button.active { background: var(--surface2); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-  .view-toggle button:hover:not(.active) { color: var(--text); }
+    #header .logo svg {
+      width: 28px; height: 28px;
+    }
 
-  /* ── Toolbar ── */
-  #toolbar {
-    height: var(--toolbar-h); background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
-    padding: 0 20px; flex-shrink: 0;
-  }
-  .tb-btn {
-    display: flex; align-items: center; gap: 6px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text-muted);
-    font-family: var(--font); font-size: 12px; font-weight: 500;
-    padding: 5px 12px; cursor: pointer; transition: all 0.15s;
-  }
-  .tb-btn:hover { border-color: var(--border-light); color: var(--text); }
-  .tb-btn.active { border-color: var(--accent); color: var(--accent); }
-  .tb-btn svg { width: 13px; height: 13px; }
-  .tb-sep { width: 1px; height: 22px; background: var(--border); margin: 0 4px; }
-  .tb-label { font-size: 11px; color: var(--text-dim); margin-right: 4px; }
-  #project-select {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text);
-    font-family: var(--font); font-size: 12px; padding: 5px 10px;
-    cursor: pointer; outline: none;
-  }
-  #project-select:focus { border-color: var(--accent); }
-  #project-select option { background: var(--surface2); }
-  .tb-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .legend { display: flex; align-items: center; gap: 14px; }
-  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
-  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+    #header .logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
 
-  /* ── Gantt ── */
-  #gantt-wrap { flex: 1; overflow: hidden; position: relative; }
-  #gantt { width: 100%; height: 100%; }
+    #header .logo-text span {
+      color: var(--accent);
+    }
 
-  /* ── Loading overlay ── */
-  #loading {
-    display: none; position: absolute; inset: 0;
-    background: var(--bg); align-items: center; justify-content: center;
-    flex-direction: column; gap: 16px; z-index: 100;
-  }
-  #loading.visible { display: flex; }
-  .spinner {
-    width: 32px; height: 32px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; color: var(--text-muted); }
+    #header .divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+    }
 
-  /* ── Error banner ── */
-  #error-banner {
-    display: none; position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-    background: rgba(240,91,91,0.15); border: 1px solid var(--danger);
-    border-radius: var(--radius); padding: 10px 20px;
-    color: var(--danger); font-size: 12px; z-index: 200;
-    max-width: 500px; text-align: center;
-  }
-  #error-banner.visible { display: block; }
+    #header .page-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
 
-  /* ── Empty state ── */
-  #empty-state {
-    display: none; position: absolute; inset: 0;
-    align-items: center; justify-content: center;
-    flex-direction: column; gap: 12px; background: var(--bg);
-    color: var(--text-muted); font-size: 14px;
-  }
-  #empty-state svg { width: 48px; height: 48px; opacity: 0.3; }
+    #header .spacer { flex: 1; }
 
-  /* ── DHTMLX Dark Theme Overrides ── */
-  .gantt_container, .gantt_grid, .gantt_task { background: var(--bg) !important; font-family: var(--font) !important; }
-  .gantt_grid_head_cell {
-    background: var(--surface) !important; color: var(--text-muted) !important;
-    font-size: 11px !important; font-weight: 600 !important;
-    letter-spacing: 0.5px !important; text-transform: uppercase !important;
-    border-color: var(--border) !important;
-  }
-  .gantt_row, .gantt_task_row { border-bottom: 1px solid var(--border) !important; }
-  .gantt_row:hover, .gantt_task_row:hover { background: var(--surface) !important; }
-  .gantt_row.odd, .gantt_task_row.odd { background: transparent !important; }
-  .gantt_row.gantt_row_project, .gantt_task_row.gantt_task_row_project { background: var(--phase-bg) !important; }
-  .gantt_row.gantt_row_project:hover, .gantt_task_row.gantt_task_row_project:hover { background: #1f2a50 !important; }
-  .gantt_tree_content { color: var(--text) !important; font-size: 13px !important; }
-  .gantt_row.gantt_row_project .gantt_tree_content { color: var(--text) !important; font-weight: 600 !important; font-size: 12px !important; letter-spacing: 0.3px !important; }
-  .gantt_cell { border-color: var(--border) !important; color: var(--text-muted) !important; font-size: 12px !important; }
-  .gantt_grid_data .gantt_cell:first-child { color: var(--text) !important; }
-  .gantt_scale_cell { background: var(--surface) !important; color: var(--text-muted) !important; font-size: 11px !important; font-weight: 500 !important; border-color: var(--border) !important; }
-  .gantt_scale_row { border-bottom: 1px solid var(--border) !important; }
-  .gantt_task_cell { border-color: var(--border) !important; }
-  .gantt_task_cell.weekend { background: rgba(255,255,255,0.015) !important; }
-  .gantt_today_marker { background: var(--accent) !important; opacity: 0.6; width: 1px !important; }
-  .gantt_container { border: none !important; }
-  .gantt_grid { border-right: 1px solid var(--border) !important; }
-  .gantt_task_link .gantt_line_wrapper > div { background: #3a4260 !important; }
-  .gantt_task_link:hover .gantt_line_wrapper > div { background: var(--accent) !important; }
-  .gantt_task_link .gantt_link_arrow { border-color: #3a4260 !important; }
-  .gantt_task_line.gantt_milestone { background: var(--milestone-clr) !important; border-color: var(--milestone-clr) !important; }
+    #header .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+    }
 
-  /* ── Tooltip ── */
-  .gantt-tooltip {
-    background: var(--surface2); border: 1px solid var(--border-light);
-    border-radius: 8px; padding: 12px 16px; font-family: var(--font);
-    color: var(--text); font-size: 13px; min-width: 220px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-  .gantt-tooltip h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-  .gantt-tooltip .tt-row { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 4px; font-size: 12px; }
-  .gantt-tooltip .tt-label { color: var(--text-muted); }
-  .gantt-tooltip .tt-val { color: var(--text); font-weight: 500; }
-  .status-pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .pill-complete   { background: rgba(61,214,140,0.15); color: var(--accent2); }
-  .pill-inprogress { background: rgba(91,142,240,0.15); color: var(--accent3); }
-  .pill-notstarted { background: rgba(107,120,153,0.15); color: var(--text-muted); }
-  .pill-delayed    { background: rgba(240,91,91,0.15);  color: var(--danger); }
-</style>
+    #header .status-pill .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+
+    #header .status-pill.connected .dot  { background: var(--green); }
+    #header .status-pill.connected       { color: var(--green); border-color: rgba(63,185,80,0.3); }
+    #header .status-pill.error .dot      { background: var(--red); }
+    #header .status-pill.error           { color: var(--red); border-color: rgba(248,81,73,0.3); }
+    #header .status-pill.loading .dot    { background: var(--accent); animation: pulse 1s infinite; }
+    #header .status-pill.loading         { color: var(--accent); border-color: rgba(240,165,0,0.3); }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ─── TOOLBAR ────────────────────────────────────────────── */
+    #toolbar {
+      height: var(--toolbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+      z-index: 99;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-dim);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--border); color: var(--text); }
+    .btn.active {
+      background: rgba(240,165,0,0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+    .btn.primary:hover { background: var(--accent2); }
+
+    .btn-group {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .btn-group .btn {
+      border: none;
+      border-radius: 0;
+      border-right: 1px solid var(--border);
+    }
+    .btn-group .btn:last-child { border-right: none; }
+
+    .tb-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .tb-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 2px;
+    }
+
+    #project-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      min-width: 180px;
+    }
+    #project-select:focus { outline: none; border-color: var(--accent); }
+
+    /* ─── LEGEND ─────────────────────────────────────────────── */
+    #legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-left: auto;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+    }
+    .legend-diamond {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      transform: rotate(45deg);
+    }
+
+    /* ─── GANTT WRAPPER ──────────────────────────────────────── */
+    #gantt-wrap {
+      position: absolute;
+      top: calc(var(--header-h) + var(--toolbar-h));
+      left: 0; right: 0; bottom: 0;
+    }
+
+    #gantt_here {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─── OVERLAY (loading / error) ──────────────────────────── */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(13,17,23,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+    #overlay.hidden { display: none; }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .overlay-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .overlay-sub {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 320px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .overlay-error { color: var(--red); }
+
+    /* ─── TOAST ──────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 9999;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    #toast.success { background: rgba(63,185,80,0.15); border: 1px solid var(--green); color: var(--green); }
+    #toast.error   { background: rgba(248,81,73,0.15);  border: 1px solid var(--red);   color: var(--red); }
+    #toast.info    { background: rgba(240,165,0,0.15);  border: 1px solid var(--accent); color: var(--accent); }
+    #toast.hidden  { opacity: 0; }
+
+    /* ─── DHTMLX GANTT OVERRIDES ─────────────────────────────── */
+    .gantt_container,
+    .gantt_task,
+    .gantt_grid,
+    .gantt_grid_scale,
+    .gantt_task_scale,
+    .gantt_task_bg {
+      background: var(--bg) !important;
+      color: var(--text) !important;
+    }
+
+    .gantt_grid_head_cell,
+    .gantt_scale_cell,
+    .gantt_scale_line {
+      background: var(--surface) !important;
+      color: var(--muted) !important;
+      border-color: var(--border) !important;
+      font-family: var(--font-ui) !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.4px !important;
+    }
+
+    .gantt_row,
+    .gantt_task_row {
+      border-color: var(--border) !important;
+    }
+
+    .gantt_row:hover,
+    .gantt_task_row:hover {
+      background: var(--surface2) !important;
+    }
+
+    .gantt_row.odd,
+    .gantt_task_row.odd {
+      background: rgba(22,27,34,0.5) !important;
+    }
+
+    .gantt_cell {
+      color: var(--text-dim) !important;
+      border-color: var(--border) !important;
+      font-family: var(--font-ui) !important;
+      font-size: 12px !important;
+    }
+
+    .gantt_grid_scale,
+    .gantt_task_scale {
+      border-bottom: 1px solid var(--border) !important;
+    }
+
+    /* Task bars */
+    .gantt_task_line {
+      border-radius: 3px !important;
+      border: none !important;
+    }
+
+    .gantt_task_line.status-complete     { background: var(--green) !important; }
+    .gantt_task_line.status-in-progress  { background: var(--blue)  !important; }
+    .gantt_task_line.status-delayed      { background: var(--red)   !important; }
+    .gantt_task_line.status-not-started  { background: #3d444d !important; }
+    .gantt_task_line.type-project        { background: rgba(240,165,0,0.25) !important; border: 1px solid var(--accent) !important; border-radius: 2px !important; }
+    .gantt_task_line.type-milestone-bar  {
+      background: transparent !important;
+    }
+
+    /* Milestone diamonds */
+    .gantt_task_line.gantt_milestone {
+      background: var(--accent) !important;
+    }
+    .gantt_task_line.gantt_milestone .gantt_task_content {
+      color: #000 !important;
+      font-weight: 600 !important;
+      font-size: 10px !important;
+    }
+
+    /* Progress bar */
+    .gantt_task_progress {
+      border-radius: 3px !important;
+      opacity: 0.35 !important;
+      background: #fff !important;
+    }
+
+    /* Links */
+    .gantt_task_link .gantt_line_wrapper div { background: var(--border) !important; }
+    .gantt_link_arrow { border-color: var(--border) !important; }
+
+    /* Today line */
+    .gantt_task_line.gantt_today { background: rgba(240,165,0,0.08) !important; }
+    .gantt_marker { background: var(--accent) !important; opacity: 0.6; }
+    .gantt_marker_content { color: #000; font-size: 10px; font-weight: 700; padding: 2px 4px; }
+
+    /* Scrollbars */
+    .gantt_ver_scroll, .gantt_hor_scroll { background: var(--surface) !important; }
+
+    /* Tooltip */
+    .gantt_tooltip {
+      background: var(--surface2) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text) !important;
+      font-family: var(--font-ui) !important;
+      font-size: 12px !important;
+      border-radius: var(--radius) !important;
+      padding: 10px 14px !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+    }
+
+    /* Grid column headers */
+    .gantt_grid_head_cell { text-align: left !important; padding-left: 8px !important; }
+
+    /* Drag handle */
+    .gantt_task_drag { opacity: 0; }
+    .gantt_task_line:hover .gantt_task_drag { opacity: 1; }
+  </style>
 </head>
 <body>
-<div id="app">
 
-  <!-- HEADER -->
-  <div id="header">
-    <div class="logo">
-      <div class="logo-icon"></div>
-      <div class="logo-text">Hannah <span>Solar</span> — Project Schedule</div>
-    </div>
-    <div class="view-toggle">
-      <button id="btn-all" class="active" onclick="switchView('all')">All Projects</button>
-      <button id="btn-project" onclick="switchView('project')">Per Project</button>
-    </div>
+<!-- ─── HEADER ──────────────────────────────────────────────── -->
+<div id="header">
+  <div class="logo">
+    <!-- Sun icon -->
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="5.5" fill="#f0a500"/>
+      <line x1="14" y1="2"  x2="14" y2="5.5"  stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="14" y1="22.5" x2="14" y2="26" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="2"  y1="14" x2="5.5"  y2="14" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="22.5" y1="14" x2="26" y2="14" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="5.5"  y1="5.5"  x2="8"  y2="8"  stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="20"   y1="20"   x2="22.5" y2="22.5" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="22.5" y1="5.5"  x2="20"   y2="8"    stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8"    y1="20"   x2="5.5"  y2="22.5" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="logo-text">Hannah <span>Solar</span></span>
   </div>
-
-  <!-- TOOLBAR -->
-  <div id="toolbar">
-    <span class="tb-label">ZOOM</span>
-    <button class="tb-btn" onclick="setZoom('month')">Month</button>
-    <button class="tb-btn active" onclick="setZoom('quarter')">Quarter</button>
-    <button class="tb-btn" onclick="setZoom('year')">Year</button>
-    <div class="tb-sep"></div>
-    <span class="tb-label" id="proj-label" style="display:none">PROJECT</span>
-    <select id="project-select" style="display:none" onchange="loadProject(this.value)">
-      <option value="">— select project —</option>
-    </select>
-    <button class="tb-btn" onclick="gantt.eachTask(t => gantt.open(t.id)); gantt.render()">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,6 8,11 13,6"/></svg>
-      Expand All
-    </button>
-    <button class="tb-btn" onclick="gantt.eachTask(t => gantt.close(t.id)); gantt.render()">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,10 8,5 13,10"/></svg>
-      Collapse All
-    </button>
-    <button class="tb-btn" onclick="scrollToToday()">Today</button>
-    <button class="tb-btn" onclick="refreshData()">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5"/><polyline points="13.5,2.5 13.5,6 10,6"/></svg>
-      Refresh
-    </button>
-    <div class="tb-right">
-      <div class="legend">
-        <div class="leg-item"><div class="leg-dot" style="background:var(--accent3)"></div>In Progress</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--accent2)"></div>Complete</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--danger)"></div>Delayed</div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--text-dim)"></div>Not Started</div>
-        <div class="leg-item">
-          <svg width="12" height="12" viewBox="0 0 12 12"><polygon points="6,0 12,6 6,12 0,6" fill="var(--milestone-clr)"/></svg>
-          Milestone
-        </div>
-      </div>
-    </div>
+  <div class="divider"></div>
+  <div class="page-title">Project Gantt</div>
+  <div class="spacer"></div>
+  <div id="status-pill" class="status-pill loading">
+    <div class="dot"></div>
+    <span id="status-text">Connecting…</span>
   </div>
-
-  <!-- GANTT -->
-  <div id="gantt-wrap">
-    <div id="gantt"></div>
-
-    <div id="loading" class="visible">
-      <div class="spinner"></div>
-      <div class="loading-text">Loading projects…</div>
-    </div>
-
-    <div id="error-banner"></div>
-
-    <div id="empty-state">
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-        <rect x="4" y="8" width="40" height="32" rx="3"/>
-        <line x1="4" y1="16" x2="44" y2="16"/>
-        <line x1="16" y1="8" x2="16" y2="40"/>
-      </svg>
-      Select a project to view its schedule
-    </div>
-  </div>
-
 </div>
 
+<!-- ─── TOOLBAR ─────────────────────────────────────────────── -->
+<div id="toolbar">
+  <span class="tb-label">View</span>
+  <div class="btn-group">
+    <button class="btn active" id="btn-all" onclick="setView('all')">All Projects</button>
+    <button class="btn" id="btn-project" onclick="setView('project')">Per Project</button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <span class="tb-label">Zoom</span>
+  <div class="btn-group">
+    <button class="btn" id="zoom-month"   onclick="setZoom('month')">Month</button>
+    <button class="btn active" id="zoom-quarter" onclick="setZoom('quarter')">Quarter</button>
+    <button class="btn" id="zoom-year"    onclick="setZoom('year')">Year</button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <span class="tb-label">Project</span>
+  <select id="project-select" onchange="filterProject(this.value)">
+    <option value="all">— All Projects —</option>
+  </select>
+
+  <div class="tb-sep"></div>
+
+  <button class="btn primary" onclick="refreshData()">↻ Refresh</button>
+
+  <!-- Legend -->
+  <div id="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Complete</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>In Progress</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Delayed</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3d444d"></div>Not Started</div>
+    <div class="legend-item"><div class="legend-diamond"></div>Milestone</div>
+  </div>
+</div>
+
+<!-- ─── GANTT ────────────────────────────────────────────────── -->
+<div id="gantt-wrap">
+  <div id="gantt_here"></div>
+
+  <!-- Loading/Error overlay -->
+  <div id="overlay">
+    <div class="spinner"></div>
+    <div class="overlay-title">Loading Projects…</div>
+    <div class="overlay-sub" id="overlay-sub">Connecting to Zoho Creator</div>
+  </div>
+</div>
+
+<!-- ─── TOAST ────────────────────────────────────────────────── -->
+<div id="toast" class="hidden"></div>
+
 <script>
-/* ═══════════════════════════════════════════════════════
-   CONFIG — update these if field names ever change
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURATION — Update these values
+═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  appOwner:  "hannahsolar",
-  appName:   "hannah-solar-project-management",
-  reports: {
-    projects:   "All_Projects",
-    milestones: "All_Milestones",
-    tasks:      "All_Tasks"
-  },
-  fields: {
-    project: {
-      id:         "ID",
-      name:       "Project_Name",
-      status:     "Project_Status",
-      startDate:  "Start_Date",
-      endDate:    "Projected_End_Date",   // falls back to Original_End_Date if blank
-      endDateOrig:"Original_End_Date"
-    },
-    milestone: {
-      id:               "ID",
-      project:          "Project",         // lookup — returns display value
-      name:             "Milestone_Name",
-      phase:            "Phase",
-      status:           "Status",
-      plannedStart:     "Planned_Start_Date",
-      plannedEnd:       "Planned_End_Date",
-      paymentTriggered: "Payment_Triggered",
-      paymentAmount:    "Payment_Amount"
-    },
-    task: {
-      id:           "ID",
-      project:      "Project",
-      milestone:    "Milestone",
-      name:         "Task_Name",
-      status:       "Status",
-      plannedStart: "Planned_Start_Date",
-      plannedEnd:   "Planned_End_Date"
-    }
-  },
-  // Only show these project statuses in All Projects view
-  activeStatuses: ["Awarded", "In Progress"]
+  clientId:     '1000.BLOH3Q6D2RLURL3X7I8MBOLOSZKJ9A',
+  clientSecret: '3448d7ff6a2f41fb5721b6afa63f918ab6e66edacc',
+  refreshToken: '1000.20d461521b84917fa16da7d8498e06dc.e66f51e1fc859d0e808d73f8cd60d279',
+  accountsUrl:  'https://accounts.zoho.com',
+  apiDomain:    'https://www.zohoapis.com',
+  ownerName:    'hannahsolar',
+  appLinkName:  'hannah-solar-project-management',
 };
 
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    STATE
-   ═══════════════════════════════════════════════════════ */
-let allProjects   = [];   // raw Creator project records
-let allMilestones = [];   // raw Creator milestone records
-let allTasks      = [];   // raw Creator task records
-let currentView   = "all";
-let currentProjectId = null;
+═══════════════════════════════════════════════════════════════ */
+let accessToken  = null;
+let tokenExpiry  = 0;
+let allProjects  = [];
+let allMilestones = [];
+let allTasks     = [];
+let currentView  = 'all';
+let currentZoom  = 'quarter';
+let currentFilter = 'all';
 
-/* ═══════════════════════════════════════════════════════
-   UI HELPERS
-   ═══════════════════════════════════════════════════════ */
-function showLoading(msg) {
-  const el = document.getElementById("loading");
-  el.querySelector(".loading-text").textContent = msg || "Loading…";
-  el.classList.add("visible");
-}
-function hideLoading() {
-  document.getElementById("loading").classList.remove("visible");
-}
-function showError(msg) {
-  const el = document.getElementById("error-banner");
-  el.textContent = msg;
-  el.classList.add("visible");
-  setTimeout(() => el.classList.remove("visible"), 6000);
-}
-function showEmpty() {
-  document.getElementById("gantt").style.display       = "none";
-  document.getElementById("empty-state").style.display = "flex";
-}
-function hideEmpty() {
-  document.getElementById("gantt").style.display       = "";
-  document.getElementById("empty-state").style.display = "none";
+/* ═══════════════════════════════════════════════════════════════
+   OAUTH — Token refresh
+═══════════════════════════════════════════════════════════════ */
+async function getAccessToken() {
+  if (accessToken && Date.now() < tokenExpiry - 60000) return accessToken;
+
+  const params = new URLSearchParams({
+    grant_type:    'refresh_token',
+    client_id:     CONFIG.clientId,
+    client_secret: CONFIG.clientSecret,
+    refresh_token: CONFIG.refreshToken,
+  });
+
+  // Use a CORS proxy since Zoho token endpoint doesn't allow direct browser calls
+  // We'll use the allorigins proxy for the token exchange
+  const tokenUrl = `${CONFIG.accountsUrl}/oauth/v2/token`;
+
+  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(tokenUrl)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+  });
+
+  if (!resp.ok) throw new Error(`Token refresh HTTP ${resp.status}`);
+  const data = await resp.json();
+  if (!data.access_token) throw new Error(data.error || 'No access_token in response');
+
+  accessToken = data.access_token;
+  tokenExpiry = Date.now() + (data.expires_in || 3600) * 1000;
+  return accessToken;
 }
 
-function barColor(status) {
-  switch(status) {
-    case "Complete":    return "#3dd68c";
-    case "In Progress": return "#5b8ef0";
-    case "Delayed":     return "#f05b5b";
-    default:            return "#3a4260";
+/* ═══════════════════════════════════════════════════════════════
+   CREATOR REST API — Fetch records
+═══════════════════════════════════════════════════════════════ */
+async function fetchReport(reportLinkName) {
+  const token = await getAccessToken();
+  const url = `${CONFIG.apiDomain}/creator/v2.1/data/${CONFIG.ownerName}/${CONFIG.appLinkName}/report/${reportLinkName}?max_records=200`;
+
+  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {
+    headers: {
+      'Authorization': `Zoho-oauthtoken ${token}`,
+    }
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text();
+    throw new Error(`API error ${resp.status} on ${reportLinkName}: ${errText}`);
   }
-}
-function statusPill(status) {
-  const map = {
-    "Complete":    "pill-complete",
-    "In Progress": "pill-inprogress",
-    "Not Started": "pill-notstarted",
-    "Delayed":     "pill-delayed"
-  };
-  const cls = map[status] || "pill-notstarted";
-  return `<span class="status-pill ${cls}">${status || "Not Started"}</span>`;
-}
-function fmtDate(d) {
-  if (!d) return "—";
-  const dt = new Date(d);
-  if (isNaN(dt)) return "—";
-  return dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
-function fmtCurrency(val) {
-  if (!val && val !== 0) return "—";
-  const n = parseFloat(String(val).replace(/[^0-9.-]/g, ""));
-  if (isNaN(n)) return "—";
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const data = await resp.json();
+  return data.data || [];
 }
 
-/* ─── Parse Creator date strings ─────────────────────
-   Creator returns dates in various formats depending on
-   the account locale. We handle the most common ones.   */
-function parseCreatorDate(str) {
+/* ═══════════════════════════════════════════════════════════════
+   CREATOR REST API — Update a record
+═══════════════════════════════════════════════════════════════ */
+async function updateRecord(reportLinkName, recordId, fields) {
+  const token = await getAccessToken();
+  const url = `${CONFIG.apiDomain}/creator/v2.1/data/${CONFIG.ownerName}/${CONFIG.appLinkName}/report/${reportLinkName}/${recordId}`;
+
+  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Zoho-oauthtoken ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ data: fields }),
+  });
+
+  if (!resp.ok) {
+    const errText = await resp.text();
+    throw new Error(`Update error ${resp.status}: ${errText}`);
+  }
+  return await resp.json();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DATE HELPERS
+═══════════════════════════════════════════════════════════════ */
+function parseDate(str) {
   if (!str) return null;
-  // dd-MMM-yyyy  e.g. "20-May-2025"
-  const dmy = str.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
-  if (dmy) return new Date(`${dmy[2]} ${dmy[1]}, ${dmy[3]}`);
-  // yyyy-MM-dd
-  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
-  // MM/dd/yyyy
-  const mdy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (mdy) return new Date(`${mdy[3]}-${mdy[1].padStart(2,"0")}-${mdy[2].padStart(2,"0")}`);
-  return new Date(str);
+  // Creator returns dates in various formats, handle them all
+  const d = new Date(str);
+  return isNaN(d) ? null : d;
 }
 
-/* Format for DHTMLX: "YYYY-MM-DD" */
-function toGanttDate(str) {
-  const d = parseCreatorDate(str);
-  if (!d || isNaN(d)) return null;
-  return d.toISOString().split("T")[0];
+function formatForCreator(date) {
+  if (!date) return null;
+  const d = new Date(date);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = months[d.getMonth()];
+  const yyyy = d.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
 }
 
-/* ═══════════════════════════════════════════════════════
-   CREATOR API  — fetch all pages of a report
-   ═══════════════════════════════════════════════════════ */
-async function fetchAllRecords(reportName, criteria) {
-  const records = [];
-  let from = 0;
-  const limit = 200;
-
-  while (true) {
-    const params = {
-      appName:    CONFIG.appName,
-      reportName: reportName,
-      page:       Math.floor(from / limit) + 1,
-      pageSize:   limit
-    };
-    if (criteria) params.criteria = criteria;
-
-    let result;
-    try {
-      result = await ZOHO.CREATOR.DATA.getRecords(params);
-    } catch(e) {
-      throw new Error(`API error on ${reportName}: ${e.message || JSON.stringify(e)}`);
-    }
-
-    if (result.code !== 3000) {
-      // 3000 = success in Creator SDK
-      throw new Error(`Creator returned code ${result.code} for ${reportName}: ${result.message || ""}`);
-    }
-
-    const batch = result.data || [];
-    records.push(...batch);
-
-    // If we got fewer than the page size, we're done
-    if (batch.length < limit) break;
-    from += limit;
-  }
-
-  return records;
+function safeDate(str) {
+  const d = parseDate(str);
+  return d || new Date();
 }
 
-/* ═══════════════════════════════════════════════════════
-   LOAD ALL DATA
-   ═══════════════════════════════════════════════════════ */
-async function fetchData() {
-  showLoading("Loading projects…");
+/* ═══════════════════════════════════════════════════════════════
+   DATA LOAD
+═══════════════════════════════════════════════════════════════ */
+async function loadData() {
+  setStatus('loading', 'Connecting…');
+  showOverlay('Loading Projects…', 'Fetching data from Zoho Creator');
 
   try {
-    // Active projects only
-    const statusFilter = CONFIG.activeStatuses
-      .map(s => `${CONFIG.fields.project.status} == "${s}"`)
-      .join(" || ");
-
     const [projects, milestones, tasks] = await Promise.all([
-      fetchAllRecords(CONFIG.reports.projects,   statusFilter),
-      fetchAllRecords(CONFIG.reports.milestones, ""),
-      fetchAllRecords(CONFIG.reports.tasks,      "")
+      fetchReport('All_Projects'),
+      fetchReport('All_Milestones'),
+      fetchReport('All_Tasks'),
     ]);
 
     allProjects   = projects;
     allMilestones = milestones;
     allTasks      = tasks;
 
-    populateProjectSelector();
+    populateProjectFilter();
+    renderGantt();
+    hideOverlay();
+    setStatus('connected', `${projects.length} projects loaded`);
+    showToast(`Loaded ${projects.length} projects, ${milestones.length} milestones, ${tasks.length} tasks`, 'success');
 
-    hideLoading();
-    return true;
-
-  } catch(e) {
-    hideLoading();
-    showError("Failed to load data: " + e.message);
-    console.error(e);
-    return false;
+  } catch (err) {
+    console.error(err);
+    showOverlayError(err.message);
+    setStatus('error', 'Connection failed');
   }
 }
 
-/* ═══════════════════════════════════════════════════════
-   BUILD GANTT DATA — All Projects view
-   Rows: Project (parent) → Milestones (children)
-   ═══════════════════════════════════════════════════════ */
-function buildAllProjectsData() {
-  const f = CONFIG.fields;
-  const data  = [];
-  const links = [];
-  let linkId  = 1;
-
-  allProjects.forEach(proj => {
-    const projId  = "p_" + proj[f.project.id];
-    const projName = proj[f.project.name] || "Unnamed Project";
-    const projStatus = proj[f.project.status] || "";
-    const startRaw = proj[f.project.startDate];
-    const endRaw   = proj[f.project.endDate] || proj[f.project.endDateOrig];
-
-    const start = toGanttDate(startRaw);
-    const end   = toGanttDate(endRaw);
-
-    // Skip projects with no dates
-    if (!start || !end) return;
-
-    data.push({
-      id:         projId,
-      text:       projName,
-      type:       "project",
-      open:       true,
-      start_date: start,
-      end_date:   end,
-      status:     projStatus,
-      _raw:       proj
-    });
-
-    // Milestones for this project
-    const projMilestones = allMilestones.filter(m => {
-      const lookup = m[f.milestone.project];
-      // Creator lookup fields return an object {ID, display_value} or just a string
-      const lookupId = typeof lookup === "object" ? lookup?.ID : lookup;
-      return String(lookupId) === String(proj[f.project.id]);
-    });
-
-    // Sort by planned start date
-    projMilestones.sort((a, b) => {
-      const da = parseCreatorDate(a[f.milestone.plannedStart]);
-      const db = parseCreatorDate(b[f.milestone.plannedStart]);
-      return (da || 0) - (db || 0);
-    });
-
-    let prevMilestoneId = null;
-    projMilestones.forEach(m => {
-      const mId    = "m_" + m[f.milestone.id];
-      const mStart = toGanttDate(m[f.milestone.plannedStart]);
-      const mEnd   = toGanttDate(m[f.milestone.plannedEnd]) || mStart;
-
-      if (!mStart) return;
-
-      data.push({
-        id:               mId,
-        text:             m[f.milestone.name] || "Milestone",
-        type:             "milestone",
-        parent:           projId,
-        start_date:       mStart,
-        end_date:         mEnd,
-        status:           m[f.milestone.status] || "Not Started",
-        payment_triggered:m[f.milestone.paymentTriggered] || "No",
-        payment_amount:   fmtCurrency(m[f.milestone.paymentAmount]),
-        phase:            m[f.milestone.phase] || "",
-        _raw:             m
-      });
-
-      // Chain milestone-to-milestone links
-      if (prevMilestoneId) {
-        links.push({ id: "l_" + linkId++, source: prevMilestoneId, target: mId, type: "0" });
-      }
-      prevMilestoneId = mId;
-    });
-  });
-
-  return { data, links };
-}
-
-/* ═══════════════════════════════════════════════════════
-   BUILD GANTT DATA — Per Project view
-   Rows: Phase (parent) → Tasks + Milestone (children)
-   ═══════════════════════════════════════════════════════ */
-function buildProjectData(projectRecord) {
-  const f    = CONFIG.fields;
-  const projId = projectRecord[f.project.id];
-  const data   = [];
-  const links  = [];
-  let linkId   = 1;
-
-  // Milestones for this project
-  const milestones = allMilestones.filter(m => {
-    const lookup = m[f.milestone.project];
-    const lookupId = typeof lookup === "object" ? lookup?.ID : lookup;
-    return String(lookupId) === String(projId);
-  }).sort((a, b) => {
-    const da = parseCreatorDate(a[f.milestone.plannedStart]);
-    const db = parseCreatorDate(b[f.milestone.plannedStart]);
-    return (da || 0) - (db || 0);
-  });
-
-  // Tasks for this project
-  const tasks = allTasks.filter(t => {
-    const lookup = t[f.task.project];
-    const lookupId = typeof lookup === "object" ? lookup?.ID : lookup;
-    return String(lookupId) === String(projId);
-  });
-
-  // Group by Phase
-  const PHASE_ORDER = ["Pre-Construction", "Procurement", "Construction", "Commissioning", "Closeout"];
-
-  // Collect all phases actually used
-  const usedPhases = [...new Set(milestones.map(m => m[f.milestone.phase]).filter(Boolean))];
-  const phases = PHASE_ORDER.filter(p => usedPhases.includes(p));
-  // Append any phases not in the standard order
-  usedPhases.forEach(p => { if (!phases.includes(p)) phases.push(p); });
-  // If no phases at all, put everything under "General"
-  if (phases.length === 0) phases.push("General");
-
-  phases.forEach((phase, pi) => {
-    const phaseGanttId = "ph_" + pi;
-
-    // Milestones in this phase
-    const phaseMilestones = milestones.filter(m => (m[f.milestone.phase] || "General") === phase);
-
-    // Tasks linked to any milestone in this phase
-    const phaseMilestoneIds = new Set(phaseMilestones.map(m => String(m[f.milestone.id])));
-    const phaseTasks = tasks.filter(t => {
-      const mLookup = t[f.task.milestone];
-      const mId = typeof mLookup === "object" ? mLookup?.ID : mLookup;
-      return phaseMilestoneIds.has(String(mId));
-    });
-
-    // Compute phase date range from children
-    const allDates = [
-      ...phaseTasks.map(t => parseCreatorDate(t[f.task.plannedStart])),
-      ...phaseTasks.map(t => parseCreatorDate(t[f.task.plannedEnd])),
-      ...phaseMilestones.map(m => parseCreatorDate(m[f.milestone.plannedStart])),
-      ...phaseMilestones.map(m => parseCreatorDate(m[f.milestone.plannedEnd]))
-    ].filter(Boolean);
-
-    if (allDates.length === 0) return; // skip empty phases
-
-    const phaseStart = new Date(Math.min(...allDates)).toISOString().split("T")[0];
-    const phaseEnd   = new Date(Math.max(...allDates)).toISOString().split("T")[0];
-
-    data.push({
-      id:         phaseGanttId,
-      text:       phase.toUpperCase(),
-      type:       "project",
-      open:       true,
-      start_date: phaseStart,
-      end_date:   phaseEnd
-    });
-
-    // Add tasks
-    phaseTasks.forEach(t => {
-      const tStart = toGanttDate(t[f.task.plannedStart]);
-      const tEnd   = toGanttDate(t[f.task.plannedEnd]);
-      if (!tStart || !tEnd) return;
-
-      data.push({
-        id:         "t_" + t[f.task.id],
-        text:       t[f.task.name] || "Task",
-        parent:     phaseGanttId,
-        start_date: tStart,
-        end_date:   tEnd,
-        status:     t[f.task.status] || "Not Started",
-        _raw:       t
-      });
-    });
-
-    // Add milestones — with links between consecutive milestones in phase
-    let prevMId = null;
-    phaseMilestones.forEach(m => {
-      const mGanttId = "m_" + m[f.milestone.id];
-      const mStart   = toGanttDate(m[f.milestone.plannedStart]);
-      const mEnd     = toGanttDate(m[f.milestone.plannedEnd]) || mStart;
-      if (!mStart) return;
-
-      data.push({
-        id:               mGanttId,
-        text:             m[f.milestone.name] || "Milestone",
-        type:             "milestone",
-        parent:           phaseGanttId,
-        start_date:       mStart,
-        end_date:         mEnd,
-        status:           m[f.milestone.status] || "Not Started",
-        payment_triggered:m[f.milestone.paymentTriggered] || "No",
-        payment_amount:   fmtCurrency(m[f.milestone.paymentAmount]),
-        phase:            phase,
-        _raw:             m
-      });
-
-      if (prevMId) {
-        links.push({ id: "l_" + linkId++, source: prevMId, target: mGanttId, type: "0" });
-      }
-      prevMId = mGanttId;
-    });
-  });
-
-  return { data, links };
-}
-
-/* ═══════════════════════════════════════════════════════
-   GANTT CONFIGURATION
-   ═══════════════════════════════════════════════════════ */
-const ZOOM_CONFIGS = {
-  month:   { scales: [{ unit: "month", step: 1, format: "%M %Y" }, { unit: "week", step: 1, format: "W%W" }], col_width: 60 },
-  quarter: { scales: [{ unit: "month", step: 1, format: "%M %Y" }, { unit: "day", step: 7, format: "%d" }],   col_width: 40 },
-  year:    { scales: [{ unit: "year",  step: 1, format: "%Y" },    { unit: "month", step: 1, format: "%M" }], col_width: 50 }
-};
-let currentZoom = "quarter";
-
-function setZoom(z) {
-  currentZoom = z;
-  const cfg = ZOOM_CONFIGS[z];
-  gantt.config.scales = cfg.scales;
-  gantt.config.min_column_width = cfg.col_width;
-  gantt.render();
-  document.querySelectorAll('.tb-btn').forEach(b => {
-    const t = b.textContent.trim().toLowerCase();
-    if (["month","quarter","year"].includes(t)) {
-      b.classList.toggle("active", t === z);
-    }
-  });
-}
-
-function setColumnsAll() {
-  gantt.config.columns = [
-    {
-      name: "text", label: "Name", tree: true, width: 220,
-      template: t => {
-        if (t.type === "project")   return `<span style="font-weight:600;font-size:12px;letter-spacing:.4px">${t.text}</span>`;
-        if (t.type === "milestone") return `<span style="color:var(--accent)">${t.text}</span>`;
-        return t.text;
-      }
-    },
-    {
-      name: "status", label: "Status", align: "center", width: 110,
-      template: t => {
-        if (t.type === "project") return `<span style="color:var(--text-muted);font-size:11px">${t.status||""}</span>`;
-        return statusPill(t.status);
-      }
-    },
-    {
-      name: "start_date", label: "Start", align: "center", width: 90,
-      template: t => t.type === "project" ? "" : `<span style="font-size:11px;color:var(--text-muted)">${fmtDate(t.start_date)}</span>`
-    },
-    {
-      name: "end_date", label: "Date", align: "center", width: 90,
-      template: t => t.type === "project" ? "" : `<span style="font-size:11px;color:var(--text-muted)">${fmtDate(t.end_date)}</span>`
-    },
-    {
-      name: "payment_amount", label: "Payment", align: "right", width: 100,
-      template: t => t.payment_triggered === "Yes"
-        ? `<span style="font-size:11px;color:var(--accent2);font-family:var(--mono)">${t.payment_amount}</span>`
-        : `<span style="color:var(--text-dim);font-size:11px">—</span>`
-    }
-  ];
-}
-
-function setColumnsProject() {
-  gantt.config.columns = [
-    {
-      name: "text", label: "Task / Milestone", tree: true, width: 240,
-      template: t => {
-        if (t.type === "project")   return `<span style="font-weight:600;font-size:11px;letter-spacing:.8px;color:var(--text-muted)">${t.text}</span>`;
-        if (t.type === "milestone") return `<span style="color:var(--accent)">${t.text}</span>`;
-        return t.text;
-      }
-    },
-    {
-      name: "status", label: "Status", align: "center", width: 110,
-      template: t => t.type === "project" ? "" : statusPill(t.status)
-    },
-    {
-      name: "start_date", label: "Start", align: "center", width: 90,
-      template: t => t.type === "project" ? "" : `<span style="font-size:11px;color:var(--text-muted)">${fmtDate(t.start_date)}</span>`
-    },
-    {
-      name: "end_date", label: "End", align: "center", width: 90,
-      template: t => t.type === "project" ? "" : `<span style="font-size:11px;color:var(--text-muted)">${fmtDate(t.end_date)}</span>`
-    }
-  ];
-}
-
-/* ── Bar styling ── */
-gantt.templates.task_style = (start, end, task) => {
-  if (task.type === gantt.config.types.project)   return "background:rgba(91,142,240,0.08);border:1px solid rgba(91,142,240,0.2);border-radius:3px;";
-  if (task.type === gantt.config.types.milestone) return "";
-  const c = barColor(task.status);
-  return `background:${c}22;border:1px solid ${c}66;border-radius:3px;`;
-};
-gantt.templates.task_text = (start, end, task) => {
-  if (task.type === gantt.config.types.project || task.type === gantt.config.types.milestone) return "";
-  return `<span style="font-size:11px;padding-left:4px">${task.text}</span>`;
-};
-
-/* ── Tooltips ── */
-gantt.templates.tooltip_text = (start, end, task) => {
-  if (task.type === gantt.config.types.project) {
-    return `<div class="gantt-tooltip">
-      <h4>${task.text}</h4>
-      <div class="tt-row"><span class="tt-label">Status</span>${statusPill(task.status)}</div>
-      <div class="tt-row"><span class="tt-label">Range</span><span class="tt-val">${fmtDate(start)} – ${fmtDate(end)}</span></div>
-    </div>`;
-  }
-  if (task.type === gantt.config.types.milestone) {
-    return `<div class="gantt-tooltip">
-      <h4>${task.text}</h4>
-      <div class="tt-row"><span class="tt-label">Phase</span><span class="tt-val">${task.phase||"—"}</span></div>
-      <div class="tt-row"><span class="tt-label">Date</span><span class="tt-val">${fmtDate(start)}</span></div>
-      <div class="tt-row"><span class="tt-label">Status</span>${statusPill(task.status)}</div>
-      ${task.payment_triggered === "Yes" ? `<div class="tt-row"><span class="tt-label">Payment</span><span class="tt-val" style="color:var(--accent2);font-family:var(--mono)">${task.payment_amount}</span></div>` : ""}
-    </div>`;
-  }
-  return `<div class="gantt-tooltip">
-    <h4>${task.text}</h4>
-    <div class="tt-row"><span class="tt-label">Status</span>${statusPill(task.status)}</div>
-    <div class="tt-row"><span class="tt-label">Start</span><span class="tt-val">${fmtDate(start)}</span></div>
-    <div class="tt-row"><span class="tt-label">End</span><span class="tt-val">${fmtDate(end)}</span></div>
-  </div>`;
-};
-
-/* ── Core config ── */
-gantt.config.date_format         = "%Y-%m-%d";
-gantt.config.row_height          = 32;
-gantt.config.task_height         = 18;
-gantt.config.fit_tasks           = true;
-gantt.config.open_tree_initially = true;
-gantt.config.readonly            = true;
-gantt.config.show_progress       = false;
-gantt.config.show_links          = true;
-gantt.config.link_line_width     = 1;
-gantt.config.link_arrow_size     = 6;
-gantt.config.scales              = ZOOM_CONFIGS.quarter.scales;
-gantt.config.min_column_width    = 40;
-
-
-/* ═══════════════════════════════════════════════════════
-   VIEW SWITCHING
-   ═══════════════════════════════════════════════════════ */
-function populateProjectSelector() {
-  const sel = document.getElementById("project-select");
-  // Clear existing options except placeholder
+/* ═══════════════════════════════════════════════════════════════
+   PROJECT FILTER DROPDOWN
+═══════════════════════════════════════════════════════════════ */
+function populateProjectFilter() {
+  const sel = document.getElementById('project-select');
+  // Clear existing options except the "All" option
   while (sel.options.length > 1) sel.remove(1);
-
   allProjects.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value       = p[CONFIG.fields.project.id];
-    opt.textContent = p[CONFIG.fields.project.name] || "Unnamed Project";
+    const opt = document.createElement('option');
+    opt.value = p.Project_Name;
+    opt.textContent = p.Project_Name;
     sel.appendChild(opt);
   });
 }
 
-function switchView(view) {
-  currentView = view;
-  document.getElementById("btn-all").classList.toggle("active", view === "all");
-  document.getElementById("btn-project").classList.toggle("active", view === "project");
+/* ═══════════════════════════════════════════════════════════════
+   BUILD GANTT DATA
+═══════════════════════════════════════════════════════════════ */
+function buildGanttData() {
+  const tasks_data = [];
+  const links_data = [];
+  let id = 1;
 
-  const projSel   = document.getElementById("project-select");
-  const projLabel = document.getElementById("proj-label");
+  const filteredProjects = currentFilter === 'all'
+    ? allProjects
+    : allProjects.filter(p => p.Project_Name === currentFilter);
 
-  if (view === "all") {
-    projSel.style.display   = "none";
-    projLabel.style.display = "none";
-    renderAllProjects();
-  } else {
-    projSel.style.display   = "inline-block";
-    projLabel.style.display = "inline";
-    if (currentProjectId) {
-      renderProject(currentProjectId);
+  filteredProjects.forEach(project => {
+    const pStart = safeDate(project.Start_Date);
+    const pEnd   = safeDate(project.Projected_End_Date || project.Original_End_Date);
+    const pId    = id++;
+
+    // Project row
+    tasks_data.push({
+      id:        pId,
+      text:      project.Project_Name,
+      start_date: pStart,
+      end_date:   pEnd,
+      type:       'project',
+      open:       true,
+      readonly:   true,
+      $source_id: project.ID,
+      $type:      'project',
+      $status:    project.Project_Status,
+    });
+
+    if (currentView === 'all') {
+      // All Projects view: milestones only under each project
+      const projMilestones = allMilestones.filter(m =>
+        m.Project && (m.Project.display_value === project.Project_Name || m.Project === project.Project_Name)
+      );
+
+      projMilestones.forEach(m => {
+        const mId = id++;
+        const mDate = safeDate(m.Planned_End_Date || m.Planned_Start_Date);
+
+        tasks_data.push({
+          id:          mId,
+          text:        m.Milestone_Name,
+          start_date:  mDate,
+          end_date:    new Date(mDate.getTime() + 86400000), // 1 day
+          type:        'milestone',
+          parent:      pId,
+          $source_id:  m.ID,
+          $type:       'milestone',
+          $status:     m.Status,
+          $payment:    m.Payment_Triggered,
+          $amount:     m.Payment_Amount,
+        });
+      });
+
     } else {
-      gantt.clearAll();
-      showEmpty();
+      // Per Project view: phases → milestones → tasks
+      const projMilestones = allMilestones.filter(m =>
+        m.Project && (m.Project.display_value === project.Project_Name || m.Project === project.Project_Name)
+      );
+
+      // Group milestones by phase
+      const phases = {};
+      projMilestones.forEach(m => {
+        const ph = m.Phase || 'General';
+        if (!phases[ph]) phases[ph] = [];
+        phases[ph].push(m);
+      });
+
+      Object.entries(phases).forEach(([phase, phaseMilestones]) => {
+        // Phase group row
+        const phaseId = id++;
+        const phaseDates = phaseMilestones
+          .map(m => safeDate(m.Planned_Start_Date))
+          .filter(Boolean);
+        const phaseEndDates = phaseMilestones
+          .map(m => safeDate(m.Planned_End_Date))
+          .filter(Boolean);
+
+        const phaseStart = phaseDates.length   ? new Date(Math.min(...phaseDates))    : pStart;
+        const phaseEnd   = phaseEndDates.length ? new Date(Math.max(...phaseEndDates)) : pEnd;
+
+        tasks_data.push({
+          id:         phaseId,
+          text:       phase,
+          start_date: phaseStart,
+          end_date:   phaseEnd,
+          type:       'project',
+          parent:     pId,
+          open:       true,
+          readonly:   true,
+          $type:      'phase',
+        });
+
+        phaseMilestones.forEach(m => {
+          const mId    = id++;
+          const mStart = safeDate(m.Planned_Start_Date);
+          const mEnd   = safeDate(m.Planned_End_Date);
+
+          tasks_data.push({
+            id:         mId,
+            text:       m.Milestone_Name,
+            start_date: mStart,
+            end_date:   mEnd,
+            type:       gantt.config.types.task,
+            parent:     phaseId,
+            open:       true,
+            $source_id: m.ID,
+            $type:      'milestone',
+            $status:    m.Status,
+            $payment:   m.Payment_Triggered,
+            $amount:    m.Payment_Amount,
+          });
+
+          // Tasks under this milestone
+          const milestoneTasks = allTasks.filter(t =>
+            t.Milestone && (t.Milestone.display_value === m.Milestone_Name || t.Milestone === m.Milestone_Name)
+          );
+
+          milestoneTasks.forEach(t => {
+            const tId = id++;
+            tasks_data.push({
+              id:         tId,
+              text:       t.Task_Name,
+              start_date: safeDate(t.Planned_Start_Date),
+              end_date:   safeDate(t.Planned_End_Date),
+              type:       gantt.config.types.task,
+              parent:     mId,
+              $source_id: t.ID,
+              $type:      'task',
+              $status:    t.Status,
+              $form:      'All_Tasks',
+            });
+          });
+        });
+      });
     }
-  }
+  });
+
+  return { data: tasks_data, links: links_data };
 }
 
-function renderAllProjects() {
-  hideEmpty();
-  setColumnsAll();
-  const gdata = buildAllProjectsData();
-  if (gdata.data.length === 0) {
-    gantt.clearAll();
-    showEmpty();
+/* ═══════════════════════════════════════════════════════════════
+   GANTT INIT & CONFIG
+═══════════════════════════════════════════════════════════════ */
+function initGantt() {
+  gantt.config.date_format   = '%Y-%m-%d';
+  gantt.config.xml_date      = '%Y-%m-%d';
+  gantt.config.scroll_on_click = false;
+  gantt.config.show_progress = true;
+  gantt.config.readonly      = false;
+  gantt.config.drag_progress = false;
+  gantt.config.drag_links    = false;
+  gantt.config.drag_move     = true;
+  gantt.config.drag_resize   = true;
+  gantt.config.open_tree_initially = true;
+  gantt.config.fit_tasks     = true;
+  gantt.config.autosize      = 'y';
+
+  gantt.config.row_height    = 34;
+  gantt.config.bar_height    = 20;
+  gantt.config.min_column_width = 40;
+
+  // Grid columns
+  gantt.config.columns = [
+    {
+      name:  'text',
+      label: 'Task / Milestone',
+      width: 240,
+      tree:  true,
+      template: (task) => {
+        const icon = task.$type === 'milestone' ? '◆ ' :
+                     task.$type === 'phase'     ? '▸ ' :
+                     task.$type === 'project'   ? '' : '  ';
+        return icon + (task.text || '');
+      }
+    },
+    {
+      name:  'start_date',
+      label: 'Start',
+      width: 90,
+      align: 'center',
+      template: (task) => {
+        if (!task.start_date) return '—';
+        return task.start_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+    },
+    {
+      name:  'end_date',
+      label: 'End',
+      width: 90,
+      align: 'center',
+      template: (task) => {
+        if (!task.end_date || task.type === 'milestone') return '—';
+        return task.end_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+    },
+    {
+      name:  '$status',
+      label: 'Status',
+      width: 100,
+      align: 'center',
+      template: (task) => {
+        if (!task.$status) return '';
+        const colors = {
+          'Complete':     '#3fb950',
+          'In Progress':  '#58a6ff',
+          'Delayed':      '#f85149',
+          'Not Started':  '#8b949e',
+          'Blocked':      '#f85149',
+          'In Progress':  '#58a6ff',
+        };
+        const c = colors[task.$status] || '#8b949e';
+        return `<span style="color:${c};font-size:11px;font-weight:500;">${task.$status}</span>`;
+      }
+    },
+  ];
+
+  // Zoom: Quarter (default)
+  setZoom('quarter', false);
+
+  // Task class by status
+  gantt.templates.task_class = (start, end, task) => {
+    const classes = [];
+    if (task.type === 'project') classes.push('type-project');
+    if (task.$status === 'Complete')    classes.push('status-complete');
+    if (task.$status === 'In Progress') classes.push('status-in-progress');
+    if (task.$status === 'Delayed')     classes.push('status-delayed');
+    if (task.$status === 'Not Started') classes.push('status-not-started');
+    if (task.$type === 'milestone')     classes.push('type-milestone-bar');
+    return classes.join(' ');
+  };
+
+  // Tooltip
+  gantt.templates.tooltip_text = (start, end, task) => {
+    let html = `<strong style="color:var(--text)">${task.text}</strong><br/>`;
+    if (task.$status) html += `<span style="color:var(--muted)">Status:</span> ${task.$status}<br/>`;
+    if (task.start_date) html += `<span style="color:var(--muted)">Start:</span> ${task.start_date.toLocaleDateString()}<br/>`;
+    if (task.end_date && task.type !== 'milestone') html += `<span style="color:var(--muted)">End:</span> ${task.end_date.toLocaleDateString()}<br/>`;
+    if (task.$payment === 'Yes' && task.$amount) html += `<span style="color:var(--accent)">💰 Payment: $${Number(task.$amount).toLocaleString()}</span>`;
+    return html;
+  };
+
+  // Grid row class
+  gantt.templates.grid_row_class = (start, end, task) => {
+    if (task.type === 'project' && task.$type !== 'phase') return 'gantt_project_row';
+    return '';
+  };
+
+  // Today marker
+  gantt.addMarker({
+    start_date: new Date(),
+    css: 'gantt_today',
+    text: 'Today',
+    title: 'Today'
+  });
+
+  // ── DRAG HANDLER — write back to Creator ────────────────────
+  gantt.attachEvent('onAfterTaskDrag', async (id, mode, e) => {
+    const task = gantt.getTask(id);
+
+    // Skip project/phase rows — they're readonly
+    if (task.type === 'project' || task.$type === 'phase') {
+      gantt.refreshTask(id);
+      return;
+    }
+
+    if (!task.$source_id) return;
+
+    const newStart = formatForCreator(task.start_date);
+    const newEnd   = formatForCreator(task.end_date);
+    const report   = task.$form || (task.$type === 'task' ? 'All_Tasks' : 'All_Milestones');
+
+    showToast('Saving schedule change…', 'info');
+
+    try {
+      await updateRecord(report, task.$source_id, {
+        Planned_Start_Date: newStart,
+        Planned_End_Date:   newEnd,
+      });
+
+      showToast(`Updated: ${task.text}`, 'success');
+    } catch (err) {
+      console.error('Update failed:', err);
+      showToast(`Save failed: ${err.message}`, 'error');
+      // Revert visual
+      gantt.refreshTask(id);
+    }
+  });
+
+  gantt.init('gantt_here');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER GANTT
+═══════════════════════════════════════════════════════════════ */
+function renderGantt() {
+  const { data, links } = buildGanttData();
+
+  if (data.length === 0) {
+    showOverlayError('No project data found. Add projects in Zoho Creator first.');
     return;
   }
+
   gantt.clearAll();
-  gantt.parse(gdata);
-  gantt.render();
+  gantt.parse({ data, links });
 }
 
-function renderProject(projectId) {
-  if (!projectId) { showEmpty(); return; }
-  currentProjectId = projectId;
+/* ═══════════════════════════════════════════════════════════════
+   ZOOM
+═══════════════════════════════════════════════════════════════ */
+function setZoom(level, rerender = true) {
+  currentZoom = level;
 
-  const proj = allProjects.find(p => String(p[CONFIG.fields.project.id]) === String(projectId));
-  if (!proj) { showEmpty(); return; }
+  // Update button states
+  ['month','quarter','year'].forEach(z => {
+    document.getElementById(`zoom-${z}`).classList.toggle('active', z === level);
+  });
 
-  hideEmpty();
-  setColumnsProject();
-  const gdata = buildProjectData(proj);
-  if (gdata.data.length === 0) {
-    gantt.clearAll();
-    showEmpty();
-    return;
+  if (level === 'month') {
+    gantt.config.scales = [
+      { unit: 'month', step: 1, format: '%F %Y' },
+      { unit: 'week',  step: 1, format: 'Wk %W' },
+    ];
+    gantt.config.min_column_width = 80;
+  } else if (level === 'quarter') {
+    gantt.config.scales = [
+      { unit: 'quarter', step: 1, format: (d) => {
+          const q = Math.floor(d.getMonth() / 3) + 1;
+          return `Q${q} ${d.getFullYear()}`;
+        }
+      },
+      { unit: 'month', step: 1, format: '%M' },
+    ];
+    gantt.config.min_column_width = 60;
+  } else {
+    gantt.config.scales = [
+      { unit: 'year',    step: 1, format: '%Y' },
+      { unit: 'quarter', step: 1, format: (d) => {
+          return `Q${Math.floor(d.getMonth()/3)+1}`;
+        }
+      },
+    ];
+    gantt.config.min_column_width = 80;
   }
-  gantt.clearAll();
-  gantt.parse(gdata);
-  gantt.render();
-}
 
-function loadProject(id) {
-  if (!id) { showEmpty(); return; }
-  renderProject(id);
-}
-
-function scrollToToday() { gantt.showDate(new Date()); }
-
-async function refreshData() {
-  const ok = await fetchData();
-  if (!ok) return;
-  if (currentView === "all") renderAllProjects();
-  else if (currentProjectId) renderProject(currentProjectId);
-}
-
-/* INIT */
-gantt.init("gantt");
-// Today marker via CSS - added after init
-try { gantt.addMarker({ start_date: new Date(), css: "gantt_today_marker", text: "Today" }); } catch(e) {}
-
-(async function() {
-  try {
-    const ok = await fetchData();
-    if (ok) renderAllProjects();
-  } catch(e) {
-    hideLoading();
-    showError("Failed to load: " + e.message);
-    console.error(e);
+  if (rerender && allProjects.length > 0) {
+    gantt.render();
   }
-})();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEW TOGGLE
+═══════════════════════════════════════════════════════════════ */
+function setView(view) {
+  currentView = view;
+  document.getElementById('btn-all').classList.toggle('active', view === 'all');
+  document.getElementById('btn-project').classList.toggle('active', view === 'project');
+  if (allProjects.length > 0) renderGantt();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROJECT FILTER
+═══════════════════════════════════════════════════════════════ */
+function filterProject(value) {
+  currentFilter = value;
+  if (allProjects.length > 0) renderGantt();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REFRESH
+═══════════════════════════════════════════════════════════════ */
+function refreshData() {
+  accessToken = null; // Force token refresh
+  loadData();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════════ */
+function setStatus(state, text) {
+  const pill = document.getElementById('status-pill');
+  const span = document.getElementById('status-text');
+  pill.className = `status-pill ${state}`;
+  span.textContent = text;
+}
+
+function showOverlay(title, sub) {
+  const el = document.getElementById('overlay');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="spinner"></div>
+    <div class="overlay-title">${title}</div>
+    <div class="overlay-sub">${sub}</div>
+  `;
+}
+
+function showOverlayError(msg) {
+  const el = document.getElementById('overlay');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="overlay-title overlay-error">⚠ Connection Error</div>
+    <div class="overlay-sub">${msg}</div>
+    <button class="btn primary" style="margin-top:8px" onclick="refreshData()">Retry</button>
+  `;
+}
+
+function hideOverlay() {
+  document.getElementById('overlay').classList.add('hidden');
+}
+
+let toastTimer = null;
+function showToast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.className = `${type}`;
+  el.textContent = msg;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'hidden'; }, 3500);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════════════ */
+initGantt();
+loadData();
 </script>
 </body>
 </html>
