@@ -1,6 +1,16 @@
 {
   "projects": [
     {
+      "Contract_Typ": "",
+      "Project_Status": "In Progress",
+      "Original_Contract_Value": "3000000.00",
+      "ID": "3466911000000270003",
+      "Project_Name": "Solar Test Project",
+      "System_Size": "",
+      "Project_Typ": "BESS",
+      "Start_Date": "01-Mar-2026"
+    },
+    {
       "Contract_Typ": "Fixed Price",
       "Project_Status": "Prospect",
       "Original_Contract_Value": "500000.00",
@@ -12,6 +22,54 @@
     }
   ],
   "milestones": [
+    {
+      "Status": "Not Started",
+      "Payment_Triggered": "No",
+      "Project": {
+        "Project_Name": "Solar Test Project",
+        "ID": "3466911000000270003",
+        "zc_display_value": "Solar Test Project"
+      },
+      "Milestone_Name": "Interconnection",
+      "Planned_End_Date": "20-Jun-2026",
+      "Actual_End_Date": "",
+      "Phase": "Commissioning",
+      "Planned_Start_Date": "01-Jun-2026",
+      "Payment_Amount": "",
+      "ID": "3466911000000270015"
+    },
+    {
+      "Status": "In Progress",
+      "Payment_Triggered": "No",
+      "Project": {
+        "Project_Name": "Solar Test Project",
+        "ID": "3466911000000270003",
+        "zc_display_value": "Solar Test Project"
+      },
+      "Milestone_Name": "Equipment Delivered",
+      "Planned_End_Date": "15-Apr-2026",
+      "Actual_End_Date": "",
+      "Phase": "Procurement",
+      "Planned_Start_Date": "16-Mar-2026",
+      "Payment_Amount": "",
+      "ID": "3466911000000270011"
+    },
+    {
+      "Status": "Complete",
+      "Payment_Triggered": "No",
+      "Project": {
+        "Project_Name": "Solar Test Project",
+        "ID": "3466911000000270003",
+        "zc_display_value": "Solar Test Project"
+      },
+      "Milestone_Name": "Permitting complete",
+      "Planned_End_Date": "15-Mar-2026",
+      "Actual_End_Date": "",
+      "Phase": "Pre-Construction",
+      "Planned_Start_Date": "01-Mar-2026",
+      "Payment_Amount": "",
+      "ID": "3466911000000270007"
+    },
     {
       "Status": "Complete",
       "Payment_Triggered": "Yes",
@@ -30,6 +88,46 @@
     }
   ],
   "tasks": [
+    {
+      "Status": "Not Started",
+      "Actual_Completion_Date": "",
+      "Project": {
+        "Project_Name": "Solar Test Project",
+        "ID": "3466911000000270003",
+        "zc_display_value": "Solar Test Project"
+      },
+      "Assigned_To": "",
+      "Planned_End_Date": "15-Apr-2026",
+      "Planned_Start_Date": "26-Mar-2026",
+      "Milestone": {
+        "Milestone_Name": "Equipment Delivered",
+        "ID": "3466911000000270011",
+        "zc_display_value": "Equipment Delivered"
+      },
+      "Priority": "Medium",
+      "ID": "3466911000000270023",
+      "Task_Name": "Order Inverters"
+    },
+    {
+      "Status": "In Progress",
+      "Actual_Completion_Date": "",
+      "Project": {
+        "Project_Name": "Solar Test Project",
+        "ID": "3466911000000270003",
+        "zc_display_value": "Solar Test Project"
+      },
+      "Assigned_To": "",
+      "Planned_End_Date": "25-Mar-2026",
+      "Planned_Start_Date": "16-Mar-2026",
+      "Milestone": {
+        "Milestone_Name": "Equipment Delivered",
+        "ID": "3466911000000270011",
+        "zc_display_value": "Equipment Delivered"
+      },
+      "Priority": "Medium",
+      "ID": "3466911000000270019",
+      "Task_Name": "Order Modules"
+    },
     {
       "Status": "Complete",
       "Actual_Completion_Date": "",
@@ -91,5 +189,5 @@
       "Task_Name": "Task 1"
     }
   ],
-  "updated_at": "2026-02-22T11:38:39.468959Z"
+  "updated_at": "2026-02-22T11:54:59.277375Z"
 }
