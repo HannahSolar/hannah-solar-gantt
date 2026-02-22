@@ -525,31 +525,15 @@ let currentFilter = 'all';
    OAUTH — Token refresh
 ═══════════════════════════════════════════════════════════════ */
 async function getAccessToken() {
-  if (accessToken && Date.now() < tokenExpiry - 60000) return accessToken;
+  if (accessToken) return accessToken;
 
-  const params = new URLSearchParams({
-    grant_type:    'refresh_token',
-    client_id:     CONFIG.clientId,
-    client_secret: CONFIG.clientSecret,
-    refresh_token: CONFIG.refreshToken,
-  });
-
-  // Use a CORS proxy since Zoho token endpoint doesn't allow direct browser calls
-  // We'll use the allorigins proxy for the token exchange
-  const tokenUrl = `${CONFIG.accountsUrl}/oauth/v2/token`;
-
-  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(tokenUrl)}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: params.toString(),
-  });
-
-  if (!resp.ok) throw new Error(`Token refresh HTTP ${resp.status}`);
+  // Read token.json generated hourly by GitHub Action — no CORS issues
+  const resp = await fetch('./token.json?nocache=' + Date.now());
+  if (!resp.ok) throw new Error(`Could not load token.json (HTTP ${resp.status})`);
   const data = await resp.json();
-  if (!data.access_token) throw new Error(data.error || 'No access_token in response');
+  if (!data.access_token) throw new Error('No access_token found in token.json');
 
   accessToken = data.access_token;
-  tokenExpiry = Date.now() + (data.expires_in || 3600) * 1000;
   return accessToken;
 }
 
@@ -560,7 +544,7 @@ async function fetchReport(reportLinkName) {
   const token = await getAccessToken();
   const url = `${CONFIG.apiDomain}/creator/v2.1/data/${CONFIG.ownerName}/${CONFIG.appLinkName}/report/${reportLinkName}?max_records=200`;
 
-  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {
+  const resp = await fetch(url, {
     headers: {
       'Authorization': `Zoho-oauthtoken ${token}`,
     }
@@ -581,7 +565,7 @@ async function updateRecord(reportLinkName, recordId, fields) {
   const token = await getAccessToken();
   const url = `${CONFIG.apiDomain}/creator/v2.1/data/${CONFIG.ownerName}/${CONFIG.appLinkName}/report/${reportLinkName}/${recordId}`;
 
-  const resp = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {
+  const resp = await fetch(url, {
     method: 'PATCH',
     headers: {
       'Authorization': `Zoho-oauthtoken ${token}`,
