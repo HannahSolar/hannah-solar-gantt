@@ -826,11 +826,10 @@ function initGantt() {
   gantt.config.drag_resize   = true;
   gantt.config.open_tree_initially = true;
   gantt.config.fit_tasks     = true;
-  gantt.config.autosize      = 'y';
-
   gantt.config.row_height    = 34;
   gantt.config.bar_height    = 20;
   gantt.config.min_column_width = 40;
+  gantt.config.autosize      = false;
 
   // Grid columns
   gantt.config.columns = [
@@ -918,13 +917,15 @@ function initGantt() {
     return '';
   };
 
-  // Today marker
-  gantt.addMarker({
-    start_date: new Date(),
-    css: 'gantt_today',
-    text: 'Today',
-    title: 'Today'
-  });
+  // Today marker (only if supported in this build)
+  if (typeof gantt.addMarker === 'function') {
+    gantt.addMarker({
+      start_date: new Date(),
+      css: 'gantt_today',
+      text: 'Today',
+      title: 'Today'
+    });
+  }
 
   // ── DRAG HANDLER — write back to Creator ────────────────────
   gantt.attachEvent('onAfterTaskDrag', async (id, mode, e) => {
