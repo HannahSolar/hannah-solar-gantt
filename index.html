@@ -585,8 +585,17 @@ async function updateRecord(reportLinkName, recordId, fields) {
    DATE HELPERS
 ═══════════════════════════════════════════════════════════════ */
 function parseDate(str) {
-  if (!str) return null;
-  // Creator returns dates in various formats, handle them all
+  if (!str || str.trim() === '') return null;
+  // Handle Creator format: dd-MMM-yyyy e.g. "16-Mar-2026"
+  const creatorFormat = str.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
+  if (creatorFormat) {
+    const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const day   = parseInt(creatorFormat[1]);
+    const month = months[creatorFormat[2]];
+    const year  = parseInt(creatorFormat[3]);
+    if (month !== undefined) return new Date(year, month, day);
+  }
+  // Fallback for ISO and other formats
   const d = new Date(str);
   return isNaN(d) ? null : d;
 }
