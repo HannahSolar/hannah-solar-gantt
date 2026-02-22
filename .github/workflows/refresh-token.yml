@@ -1,4 +1,4 @@
-name: Refresh Zoho Token
+name: Refresh Zoho Token and Data
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:       # Allow manual trigger
 
 jobs:
-  refresh-token:
+  refresh-token-and-data:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,15 +24,55 @@ jobs:
             -d "refresh_token=${{ secrets.ZOHO_REFRESH_TOKEN }}")
           
           echo "Token response: $RESPONSE"
-          
           ACCESS_TOKEN=$(echo $RESPONSE | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
           
           echo "{\"access_token\": \"$ACCESS_TOKEN\", \"generated_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > token.json
 
-      - name: Commit token file
+      - name: Fetch Projects from Zoho Creator
+        run: |
+          curl -s "https://www.zohoapis.com/creator/v2.1/data/hannahsolar/hannah-solar-project-management/report/All_Projects?max_records=200" \
+            -H "Authorization: Zoho-oauthtoken $ACCESS_TOKEN" > projects.json
+          echo "Projects response:"
+          cat projects.json
+
+      - name: Fetch Milestones from Zoho Creator
+        run: |
+          curl -s "https://www.zohoapis.com/creator/v2.1/data/hannahsolar/hannah-solar-project-management/report/All_Milestones?max_records=200" \
+            -H "Authorization: Zoho-oauthtoken $ACCESS_TOKEN" > milestones.json
+
+      - name: Fetch Tasks from Zoho Creator
+        run: |
+          curl -s "https://www.zohoapis.com/creator/v2.1/data/hannahsolar/hannah-solar-project-management/report/All_Tasks?max_records=200" \
+            -H "Authorization: Zoho-oauthtoken $ACCESS_TOKEN" > tasks.json
+
+      - name: Combine into data.json
+        run: |
+          python3 << 'EOF'
+          import json
+          
+          def load(f):
+              with open(f) as fp:
+                  d = json.load(fp)
+              return d.get('data', [])
+          
+          output = {
+              "projects":   load('projects.json'),
+              "milestones": load('milestones.json'),
+              "tasks":      load('tasks.json'),
+              "updated_at": __import__('datetime').datetime.utcnow().isoformat() + 'Z'
+          }
+          
+          with open('data.json', 'w') as f:
+              json.dump(output, f, indent=2)
+          
+          print(f"Saved {len(output['projects'])} projects, {len(output['milestones'])} milestones, {len(output['tasks'])} tasks")
+          EOF
+
+      - name: Commit files
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add token.json
-          git diff --staged --quiet || git commit -m "Refresh Zoho access token"
+          git add token.json data.json
+          git diff --staged --quiet || git commit -m "Refresh Zoho token and data"
           git push
