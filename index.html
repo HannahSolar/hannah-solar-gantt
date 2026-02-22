@@ -369,17 +369,21 @@
       border-radius: 2px !important;
     }
 
-    /* Milestone bars (non-diamond style — shown as slim colored bars) */
-    .gantt_task_line.type-milestone-bar.status-complete    { background: var(--green)  !important; opacity: 0.85; }
-    .gantt_task_line.type-milestone-bar.status-in-progress { background: var(--blue)   !important; opacity: 0.85; }
-    .gantt_task_line.type-milestone-bar.status-delayed     { background: var(--red)    !important; opacity: 0.85; }
-    .gantt_task_line.type-milestone-bar.status-not-started { background: #3d444d       !important; opacity: 0.85; }
-    /* Fallback if no status class */
+    /* Milestone bars — slim, color-coded by status */
     .gantt_task_line.type-milestone-bar {
       background: #3d444d !important;
-      opacity: 0.85;
-      height: 14px !important;
-      margin-top: 3px !important;
+      opacity: 0.9;
+      height: 10px !important;
+      margin-top: 5px !important;
+      border-radius: 2px !important;
+    }
+    .gantt_task_line.type-milestone-bar.status-complete    { background: var(--green) !important; }
+    .gantt_task_line.type-milestone-bar.status-in-progress { background: var(--blue)  !important; }
+    .gantt_task_line.type-milestone-bar.status-delayed     { background: var(--red)   !important; }
+    .gantt_task_line.type-milestone-bar.status-not-started { background: #3d444d      !important; }
+    .gantt_task_line.type-milestone-bar .gantt_task_content {
+      font-size: 10px !important;
+      line-height: 10px !important;
     }
 
     /* DHTMLX milestone diamonds */
@@ -423,6 +427,17 @@
 
     /* Scrollbars */
     .gantt_ver_scroll, .gantt_hor_scroll { background: var(--surface) !important; }
+    .gantt_scroll_content { background: var(--border) !important; border-radius: 4px !important; }
+    .gantt_layout_cell_border { border-color: var(--border) !important; }
+
+    /* Custom scrollbar styling for webkit browsers */
+    .gantt_task::-webkit-scrollbar { height: 10px; width: 10px; }
+    .gantt_task::-webkit-scrollbar-track { background: var(--surface); }
+    .gantt_task::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .gantt_task::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    .gantt_grid_data::-webkit-scrollbar { width: 10px; }
+    .gantt_grid_data::-webkit-scrollbar-track { background: var(--surface); }
+    .gantt_grid_data::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
     /* Tooltip */
     .gantt_tooltip {
@@ -828,12 +843,18 @@ function buildGanttData() {
           );
 
           milestoneTasks.forEach(t => {
+            // Skip tasks with no dates
+            if (!t.Planned_Start_Date || !t.Planned_End_Date) return;
+            const tStart = parseDate(t.Planned_Start_Date);
+            const tEnd   = parseDate(t.Planned_End_Date);
+            if (!tStart || !tEnd) return;
+
             const tId = id++;
             tasks_data.push({
               id:         tId,
               text:       t.Task_Name,
-              start_date: safeDate(t.Planned_Start_Date),
-              end_date:   safeDate(t.Planned_End_Date),
+              start_date: tStart,
+              end_date:   tEnd,
               type:       gantt.config.types.task,
               parent:     mId,
               $source_id: t.ID,
@@ -861,14 +882,31 @@ function initGantt() {
   gantt.config.readonly      = false;
   gantt.config.drag_progress = false;
   gantt.config.drag_links    = false;
-  gantt.config.drag_move     = true;
-  gantt.config.drag_resize   = true;
+  gantt.config.drag_move     = false;
+  gantt.config.drag_resize   = false;
   gantt.config.open_tree_initially = true;
   gantt.config.fit_tasks     = true;
   gantt.config.row_height    = 34;
   gantt.config.bar_height    = 20;
   gantt.config.min_column_width = 40;
   gantt.config.autosize      = false;
+
+  // Scrolling
+  gantt.config.scroll_size   = 10;
+  gantt.config.layout = {
+    css: 'gantt_container',
+    rows: [
+      {
+        cols: [
+          { view: 'grid',       scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'grid' },
+          { resizer: true, width: 1 },
+          { view: 'timeline',   scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'timeline' },
+          { view: 'scrollbar',  id: 'scrollVer' },
+        ]
+      },
+      { view: 'scrollbar', id: 'scrollHor', height: 10 }
+    ]
+  };
 
   // Grid columns
   gantt.config.columns = [
@@ -966,38 +1004,8 @@ function initGantt() {
     });
   }
 
-  // ── DRAG HANDLER — write back to Creator ────────────────────
-  gantt.attachEvent('onAfterTaskDrag', async (id, mode, e) => {
-    const task = gantt.getTask(id);
-
-    // Skip project/phase rows — they're readonly
-    if (task.type === 'project' || task.$type === 'phase') {
-      gantt.refreshTask(id);
-      return;
-    }
-
-    if (!task.$source_id) return;
-
-    const newStart = formatForCreator(task.start_date);
-    const newEnd   = formatForCreator(task.end_date);
-    const report   = task.$form || (task.$type === 'task' ? 'All_Tasks' : 'All_Milestones');
-
-    showToast('Saving schedule change…', 'info');
-
-    try {
-      await updateRecord(report, task.$source_id, {
-        Planned_Start_Date: newStart,
-        Planned_End_Date:   newEnd,
-      });
-
-      showToast(`Updated: ${task.text}`, 'success');
-    } catch (err) {
-      console.error('Update failed:', err);
-      showToast(`Save failed: ${err.message}`, 'error');
-      // Revert visual
-      gantt.refreshTask(id);
-    }
-  });
+  // Drag-to-reschedule disabled — Gantt is read-only
+  // Updates are made in Zoho Creator and synced hourly via GitHub Action
 
   gantt.init('gantt_here');
 }
@@ -1128,6 +1136,19 @@ function showToast(msg, type = 'info') {
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.className = 'hidden'; }, 3500);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   KEYBOARD SCROLL
+═══════════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', (e) => {
+  if (!allProjects.length) return;
+  const scrollAmount = 120;
+  const state = gantt.getScrollState();
+  if (e.key === 'ArrowLeft')  { gantt.scrollTo(state.x - scrollAmount, state.y); e.preventDefault(); }
+  if (e.key === 'ArrowRight') { gantt.scrollTo(state.x + scrollAmount, state.y); e.preventDefault(); }
+  if (e.key === 'ArrowUp')    { gantt.scrollTo(state.x, state.y - scrollAmount); e.preventDefault(); }
+  if (e.key === 'ArrowDown')  { gantt.scrollTo(state.x, state.y + scrollAmount); e.preventDefault(); }
+});
 
 /* ═══════════════════════════════════════════════════════════════
    BOOT — wait for all scripts to load
