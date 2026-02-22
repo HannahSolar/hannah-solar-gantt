@@ -350,35 +350,65 @@
       border-bottom: 1px solid var(--border) !important;
     }
 
-    /* Task bars */
+    /* ── Task bars ───────────────────────────────────────────── */
     .gantt_task_line {
       border-radius: 3px !important;
       border: none !important;
     }
 
+    /* Status colors for regular tasks */
     .gantt_task_line.status-complete     { background: var(--green) !important; }
     .gantt_task_line.status-in-progress  { background: var(--blue)  !important; }
     .gantt_task_line.status-delayed      { background: var(--red)   !important; }
-    .gantt_task_line.status-not-started  { background: #3d444d !important; }
-    .gantt_task_line.type-project        { background: rgba(240,165,0,0.25) !important; border: 1px solid var(--accent) !important; border-radius: 2px !important; }
-    .gantt_task_line.type-milestone-bar  {
-      background: transparent !important;
+    .gantt_task_line.status-not-started  { background: #3d444d      !important; }
+
+    /* Project / phase summary bars */
+    .gantt_task_line.type-project {
+      background: rgba(240,165,0,0.18) !important;
+      border: 1px solid rgba(240,165,0,0.5) !important;
+      border-radius: 2px !important;
     }
 
-    /* Milestone diamonds */
+    /* Milestone bars (non-diamond style — shown as slim colored bars) */
+    .gantt_task_line.type-milestone-bar.status-complete    { background: var(--green)  !important; opacity: 0.85; }
+    .gantt_task_line.type-milestone-bar.status-in-progress { background: var(--blue)   !important; opacity: 0.85; }
+    .gantt_task_line.type-milestone-bar.status-delayed     { background: var(--red)    !important; opacity: 0.85; }
+    .gantt_task_line.type-milestone-bar.status-not-started { background: #3d444d       !important; opacity: 0.85; }
+    /* Fallback if no status class */
+    .gantt_task_line.type-milestone-bar {
+      background: #3d444d !important;
+      opacity: 0.85;
+      height: 14px !important;
+      margin-top: 3px !important;
+    }
+
+    /* DHTMLX milestone diamonds */
     .gantt_task_line.gantt_milestone {
       background: var(--accent) !important;
+      border-color: var(--accent) !important;
     }
     .gantt_task_line.gantt_milestone .gantt_task_content {
       color: #000 !important;
-      font-weight: 600 !important;
+      font-weight: 700 !important;
       font-size: 10px !important;
+    }
+
+    /* Task bar text */
+    .gantt_task_content {
+      color: rgba(255,255,255,0.9) !important;
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      font-family: var(--font-ui) !important;
+    }
+    .gantt_task_line.type-project .gantt_task_content {
+      color: var(--accent) !important;
+      font-weight: 600 !important;
     }
 
     /* Progress bar */
     .gantt_task_progress {
       border-radius: 3px !important;
-      opacity: 0.35 !important;
+      opacity: 0.25 !important;
       background: #fff !important;
     }
 
@@ -409,9 +439,23 @@
     /* Grid column headers */
     .gantt_grid_head_cell { text-align: left !important; padding-left: 8px !important; }
 
+    /* Grid tree text styling */
+    .gantt_tree_content { font-family: var(--font-ui) !important; }
+
+    /* Phase rows — slightly brighter */
+    .gantt_row.gantt_project_row .gantt_cell { 
+      color: var(--accent) !important; 
+      font-weight: 600 !important;
+    }
+
     /* Drag handle */
     .gantt_task_drag { opacity: 0; }
     .gantt_task_line:hover .gantt_task_drag { opacity: 1; }
+
+    /* Remove default white/light backgrounds on task lines */
+    .gantt_task_line, .gantt_task_line * {
+      box-shadow: none !important;
+    }
   </style>
 </head>
 <body>
