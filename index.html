@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hannah Solar —  Project Gantt Chart</title>
+  <title>Hannah Solar — Project Gantt</title>
 
   <!-- DHTMLX Gantt (GPL) -->
   <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css"/>
@@ -299,6 +299,126 @@
     #toast.info    { background: rgba(240,165,0,0.15);  border: 1px solid var(--accent); color: var(--accent); }
     #toast.hidden  { opacity: 0; }
 
+    /* ─── DETAIL MODAL ───────────────────────────────────────── */
+    #detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    #detail-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #detail-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 420px;
+      max-width: 90vw;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    #detail-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    #detail-header .detail-title {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    #detail-header .detail-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    #detail-header .detail-close:hover { color: var(--text); }
+    #detail-body {
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .detail-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .detail-field.full { grid-column: 1 / -1; }
+    .detail-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-value {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .detail-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .detail-status .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+    #detail-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* ─── PRINT ──────────────────────────────────────────────── */
+    @media print {
+      #header, #toolbar, #overlay, #toast, #detail-modal { display: none !important; }
+      #gantt-wrap {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+      #gantt_here {
+        width: 100% !important;
+        height: 800px !important;
+      }
+      body { background: #fff !important; }
+      .gantt_container, .gantt_task, .gantt_grid,
+      .gantt_grid_scale, .gantt_task_scale, .gantt_task_bg {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      .gantt_row, .gantt_task_row { border-color: #ddd !important; }
+      .gantt_cell { color: #333 !important; border-color: #ddd !important; }
+      .gantt_grid_head_cell, .gantt_scale_cell { 
+        background: #f5f5f5 !important; 
+        color: #333 !important;
+        border-color: #ddd !important;
+      }
+    }
+
     /* ─── DHTMLX GANTT OVERRIDES ─────────────────────────────── */
     .gantt_container,
     .gantt_task,
@@ -525,13 +645,18 @@
 
   <div class="tb-sep"></div>
 
-  <span class="tb-label">Project</span>
   <select id="project-select" onchange="filterProject(this.value)">
     <option value="all">— All Projects —</option>
   </select>
 
   <div class="tb-sep"></div>
 
+  <div class="btn-group">
+    <button class="btn" onclick="collapseAll()" title="Collapse All">⊟</button>
+    <button class="btn" onclick="expandAll()" title="Expand All">⊞</button>
+  </div>
+
+  <button class="btn" onclick="printGantt()" title="Print">🖨</button>
   <button class="btn primary" onclick="refreshData()">↻ Refresh</button>
 
   <!-- Legend -->
@@ -553,6 +678,20 @@
     <div class="spinner"></div>
     <div class="overlay-title">Loading Projects…</div>
     <div class="overlay-sub" id="overlay-sub">Connecting to Zoho Creator</div>
+  </div>
+</div>
+
+<!-- ─── DETAIL MODAL ─────────────────────────────────────────── -->
+<div id="detail-modal" onclick="closeDetail(event)">
+  <div id="detail-card">
+    <div id="detail-header">
+      <div class="detail-title" id="detail-title">Task Name</div>
+      <button class="detail-close" onclick="closeDetailBtn()">✕</button>
+    </div>
+    <div id="detail-body"></div>
+    <div id="detail-footer">
+      <button class="btn" onclick="closeDetailBtn()">Close</button>
+    </div>
   </div>
 </div>
 
@@ -1012,6 +1151,13 @@ function initGantt() {
   // Drag-to-reschedule disabled — Gantt is read-only
   // Updates are made in Zoho Creator and synced hourly via GitHub Action
 
+  // ── CLICK HANDLER — open detail modal ───────────────────────
+  gantt.attachEvent('onTaskClick', (id, e) => {
+    const task = gantt.getTask(id);
+    openDetail(task);
+    return true;
+  });
+
   gantt.init('gantt_here');
 }
 
@@ -1140,6 +1286,110 @@ function showToast(msg, type = 'info') {
   el.textContent = msg;
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.className = 'hidden'; }, 3500);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COLLAPSE / EXPAND
+═══════════════════════════════════════════════════════════════ */
+function collapseAll() {
+  gantt.eachTask(task => {
+    if (task.$has_child) gantt.close(task.id);
+  });
+}
+
+function expandAll() {
+  gantt.eachTask(task => {
+    if (task.$has_child) gantt.open(task.id);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRINT
+═══════════════════════════════════════════════════════════════ */
+function printGantt() {
+  window.print();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DETAIL MODAL
+═══════════════════════════════════════════════════════════════ */
+function openDetail(task) {
+  if (task.type === 'project' && task.$type !== 'milestone') return;
+
+  const statusColors = {
+    'Complete':    '#3fb950',
+    'In Progress': '#58a6ff',
+    'Delayed':     '#f85149',
+    'Not Started': '#8b949e',
+    'Blocked':     '#f85149',
+    'Prospect':    '#8b949e',
+    'Awarded':     '#58a6ff',
+  };
+
+  const typeLabel = task.$type === 'milestone' ? '◆ Milestone' :
+                    task.$type === 'task'       ? 'Task' :
+                    task.$type === 'phase'      ? 'Phase' : 'Project';
+
+  const startStr = task.start_date ? task.start_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+  const endStr   = task.end_date   ? task.end_date.toLocaleDateString('en-US',   { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+  // Duration in days
+  let duration = '—';
+  if (task.start_date && task.end_date) {
+    const days = Math.round((task.end_date - task.start_date) / (1000*60*60*24));
+    duration = `${days} day${days !== 1 ? 's' : ''}`;
+  }
+
+  const statusColor = statusColors[task.$status] || '#8b949e';
+  const statusHtml = task.$status
+    ? `<span class="detail-status"><span class="dot" style="background:${statusColor}"></span>${task.$status}</span>`
+    : '—';
+
+  const paymentHtml = task.$payment === 'Yes' && task.$amount
+    ? `<span style="color:var(--accent);font-weight:600;">$${Number(task.$amount).toLocaleString()}</span>`
+    : task.$payment === 'Yes' ? 'Yes' : '—';
+
+  document.getElementById('detail-title').textContent = task.text;
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-field">
+      <div class="detail-label">Type</div>
+      <div class="detail-value">${typeLabel}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Status</div>
+      <div class="detail-value">${statusHtml}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Start Date</div>
+      <div class="detail-value">${startStr}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">End Date</div>
+      <div class="detail-value">${endStr}</div>
+    </div>
+    <div class="detail-field">
+      <div class="detail-label">Duration</div>
+      <div class="detail-value">${duration}</div>
+    </div>
+    ${task.$payment !== undefined ? `
+    <div class="detail-field">
+      <div class="detail-label">Payment Trigger</div>
+      <div class="detail-value">${paymentHtml}</div>
+    </div>` : ''}
+  `;
+
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('detail-modal')) {
+    document.getElementById('detail-modal').classList.remove('open');
+  }
+}
+
+function closeDetailBtn() {
+  document.getElementById('detail-modal').classList.remove('open');
 }
 
 /* ═══════════════════════════════════════════════════════════════
