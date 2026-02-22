@@ -1,0 +1,95 @@
+{
+  "projects": [
+    {
+      "Contract_Typ": "Fixed Price",
+      "Project_Status": "Prospect",
+      "Original_Contract_Value": "500000.00",
+      "ID": "3466911000000261003",
+      "Project_Name": "Test Project 1",
+      "System_Size": "",
+      "Project_Typ": "Commercial Rooftop",
+      "Start_Date": "01-Mar-2026"
+    }
+  ],
+  "milestones": [
+    {
+      "Status": "Complete",
+      "Payment_Triggered": "Yes",
+      "Project": {
+        "Project_Name": "Test Project 1",
+        "ID": "3466911000000261003",
+        "zc_display_value": "Test Project 1"
+      },
+      "Milestone_Name": "Test Milestone 1A",
+      "Planned_End_Date": "30-Jul-2026",
+      "Actual_End_Date": "",
+      "Phase": "Procurement",
+      "Planned_Start_Date": "01-Mar-2026",
+      "Payment_Amount": "270000.00",
+      "ID": "3466911000000261007"
+    }
+  ],
+  "tasks": [
+    {
+      "Status": "Complete",
+      "Actual_Completion_Date": "",
+      "Project": {
+        "Project_Name": "Test Project 1",
+        "ID": "3466911000000261003",
+        "zc_display_value": "Test Project 1"
+      },
+      "Assigned_To": "",
+      "Planned_End_Date": "",
+      "Planned_Start_Date": "",
+      "Milestone": {
+        "Milestone_Name": "Test Milestone 1A",
+        "ID": "3466911000000261007",
+        "zc_display_value": "Test Milestone 1A"
+      },
+      "Priority": "Medium",
+      "ID": "3466911000000261022",
+      "Task_Name": "last task"
+    },
+    {
+      "Status": "Complete",
+      "Actual_Completion_Date": "",
+      "Project": {
+        "Project_Name": "Test Project 1",
+        "ID": "3466911000000261003",
+        "zc_display_value": "Test Project 1"
+      },
+      "Assigned_To": "",
+      "Planned_End_Date": "",
+      "Planned_Start_Date": "",
+      "Milestone": {
+        "Milestone_Name": "Test Milestone 1A",
+        "ID": "3466911000000261007",
+        "zc_display_value": "Test Milestone 1A"
+      },
+      "Priority": "Medium",
+      "ID": "3466911000000261015",
+      "Task_Name": "task2"
+    },
+    {
+      "Status": "Complete",
+      "Actual_Completion_Date": "",
+      "Project": {
+        "Project_Name": "Test Project 1",
+        "ID": "3466911000000261003",
+        "zc_display_value": "Test Project 1"
+      },
+      "Assigned_To": "",
+      "Planned_End_Date": "",
+      "Planned_Start_Date": "",
+      "Milestone": {
+        "Milestone_Name": "Test Milestone 1A",
+        "ID": "3466911000000261007",
+        "zc_display_value": "Test Milestone 1A"
+      },
+      "Priority": "Medium",
+      "ID": "3466911000000261011",
+      "Task_Name": "Task 1"
+    }
+  ],
+  "updated_at": "2026-02-22T11:38:39.468959Z"
+}
