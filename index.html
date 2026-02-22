@@ -610,30 +610,30 @@ function safeDate(str) {
    DATA LOAD
 ═══════════════════════════════════════════════════════════════ */
 async function loadData() {
-  setStatus('loading', 'Connecting…');
-  showOverlay('Loading Projects…', 'Fetching data from Zoho Creator');
+  setStatus('loading', 'Loading…');
+  showOverlay('Loading Projects…', 'Reading data from Zoho Creator');
 
   try {
-    const [projects, milestones, tasks] = await Promise.all([
-      fetchReport('All_Projects'),
-      fetchReport('All_Milestones'),
-      fetchReport('All_Tasks'),
-    ]);
+    const resp = await fetch('./data.json?nocache=' + Date.now());
+    if (!resp.ok) throw new Error(`Could not load data.json (HTTP ${resp.status}). Run the GitHub Action first.`);
+    const data = await resp.json();
 
-    allProjects   = projects;
-    allMilestones = milestones;
-    allTasks      = tasks;
+    allProjects   = data.projects   || [];
+    allMilestones = data.milestones || [];
+    allTasks      = data.tasks      || [];
+
+    const updatedAt = data.updated_at ? new Date(data.updated_at).toLocaleTimeString() : 'unknown';
 
     populateProjectFilter();
     renderGantt();
     hideOverlay();
-    setStatus('connected', `${projects.length} projects loaded`);
-    showToast(`Loaded ${projects.length} projects, ${milestones.length} milestones, ${tasks.length} tasks`, 'success');
+    setStatus('connected', `${allProjects.length} projects · synced ${updatedAt}`);
+    showToast(`Loaded ${allProjects.length} projects, ${allMilestones.length} milestones, ${allTasks.length} tasks`, 'success');
 
   } catch (err) {
     console.error(err);
     showOverlayError(err.message);
-    setStatus('error', 'Connection failed');
+    setStatus('error', 'Load failed');
   }
 }
 
