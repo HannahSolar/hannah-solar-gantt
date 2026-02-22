@@ -675,7 +675,9 @@ function buildGanttData() {
 
   filteredProjects.forEach(project => {
     const pStart = safeDate(project.Start_Date);
-    const pEnd   = safeDate(project.Projected_End_Date || project.Original_End_Date);
+    // Fall back to 6 months from start if no end date provided
+    const pEndRaw = project.Projected_End_Date || project.Original_End_Date;
+    const pEnd = pEndRaw ? safeDate(pEndRaw) : new Date(safeDate(project.Start_Date).getTime() + 180*24*60*60*1000);
     const pId    = id++;
 
     // Project row
@@ -720,7 +722,7 @@ function buildGanttData() {
     } else {
       // Per Project view: phases → milestones → tasks
       const projMilestones = allMilestones.filter(m =>
-        m.Project && (m.Project.display_value === project.Project_Name || m.Project === project.Project_Name)
+        m.Project && (m.Project.ID === project.ID || m.Project.zc_display_value === project.Project_Name)
       );
 
       // Group milestones by phase
@@ -778,7 +780,7 @@ function buildGanttData() {
 
           // Tasks under this milestone
           const milestoneTasks = allTasks.filter(t =>
-            t.Milestone && (t.Milestone.display_value === m.Milestone_Name || t.Milestone === m.Milestone_Name)
+            t.Milestone && (t.Milestone.ID === m.ID || t.Milestone.zc_display_value === m.Milestone_Name)
           );
 
           milestoneTasks.forEach(t => {
