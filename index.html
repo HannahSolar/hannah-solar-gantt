@@ -12,26 +12,26 @@
   <style>
     /* ─── TOKENS ─────────────────────────────────────────────── */
     :root {
-      --bg:          #0d1117;
-      --surface:     #161b22;
-      --surface2:    #1c2330;
-      --border:      #30363d;
-      --accent:      #f0a500;
-      --accent2:     #e8c44a;
-      --green:       #3fb950;
-      --blue:        #58a6ff;
-      --red:         #f85149;
-      --muted:       #8b949e;
-      --text:        #e6edf3;
-      --text-dim:    #c9d1d9;
-      --font-ui:     'DM Sans', sans-serif;
-      --font-mono:   'JetBrains Mono', monospace;
+      --bg:          #FFFFFF;
+      --surface:     #F8F9FA;
+      --surface2:    #F1F3F5;
+      --border:      #E5E7EB;
+      --accent:      #D84315;
+      --accent2:     #BF360C;
+      --green:       #2E7D32;
+      --blue:        #1565C0;
+      --red:         #C62828;
+      --muted:       #6B7280;
+      --text:        #1F2937;
+      --text-dim:    #374151;
+      --font-ui:     'Inter', sans-serif;
+      --font-mono:   'DM Mono', monospace;
       --radius:      6px;
-      --header-h:    56px;
+      --header-h:    52px;
       --toolbar-h:   44px;
     }
 
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -64,7 +64,7 @@
     }
 
     #header .logo svg {
-      width: 28px; height: 28px;
+      width: 26px; height: 26px;
     }
 
     #header .logo-text {
@@ -85,10 +85,10 @@
     }
 
     #header .page-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
       color: var(--muted);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
     }
 
@@ -115,11 +115,11 @@
     }
 
     #header .status-pill.connected .dot  { background: var(--green); }
-    #header .status-pill.connected       { color: var(--green); border-color: rgba(63,185,80,0.3); }
+    #header .status-pill.connected       { color: var(--green); border-color: rgba(46,125,50,0.3); }
     #header .status-pill.error .dot      { background: var(--red); }
-    #header .status-pill.error           { color: var(--red); border-color: rgba(248,81,73,0.3); }
+    #header .status-pill.error           { color: var(--red); border-color: rgba(198,40,40,0.3); }
     #header .status-pill.loading .dot    { background: var(--accent); animation: pulse 1s infinite; }
-    #header .status-pill.loading         { color: var(--accent); border-color: rgba(240,165,0,0.3); }
+    #header .status-pill.loading         { color: var(--accent); border-color: rgba(216,67,21,0.3); }
 
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
@@ -142,7 +142,7 @@
       padding: 5px 12px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      background: var(--surface2);
+      background: var(--bg);
       color: var(--text-dim);
       font-family: var(--font-ui);
       font-size: 12px;
@@ -151,19 +151,19 @@
       transition: all 0.15s;
       white-space: nowrap;
     }
-    .btn:hover { background: var(--border); color: var(--text); }
+    .btn:hover { background: var(--surface2); color: var(--text); }
     .btn.active {
-      background: rgba(240,165,0,0.15);
+      background: rgba(216,67,21,0.08);
       border-color: var(--accent);
       color: var(--accent);
     }
     .btn.primary {
       background: var(--accent);
       border-color: var(--accent);
-      color: #000;
+      color: #fff;
       font-weight: 600;
     }
-    .btn.primary:hover { background: var(--accent2); }
+    .btn.primary:hover { background: var(--accent2); border-color: var(--accent2); }
 
     .btn-group {
       display: flex;
@@ -195,7 +195,7 @@
     }
 
     #project-select {
-      background: var(--surface2);
+      background: var(--bg);
       border: 1px solid var(--border);
       color: var(--text);
       font-family: var(--font-ui);
@@ -243,11 +243,11 @@
       height: 100%;
     }
 
-    /* ─── OVERLAY (loading / error) ──────────────────────────── */
+    /* ─── OVERLAY ────────────────────────────────────────────── */
     #overlay {
       position: absolute;
       inset: 0;
-      background: rgba(13,17,23,0.85);
+      background: rgba(255,255,255,0.92);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -259,7 +259,7 @@
     #overlay.hidden { display: none; }
 
     .spinner {
-      width: 36px; height: 36px;
+      width: 32px; height: 32px;
       border: 3px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
@@ -294,9 +294,9 @@
       transition: opacity 0.3s;
       pointer-events: none;
     }
-    #toast.success { background: rgba(63,185,80,0.15); border: 1px solid var(--green); color: var(--green); }
-    #toast.error   { background: rgba(248,81,73,0.15);  border: 1px solid var(--red);   color: var(--red); }
-    #toast.info    { background: rgba(240,165,0,0.15);  border: 1px solid var(--accent); color: var(--accent); }
+    #toast.success { background: rgba(46,125,50,0.1);   border: 1px solid var(--green); color: var(--green); }
+    #toast.error   { background: rgba(198,40,40,0.1);   border: 1px solid var(--red);   color: var(--red); }
+    #toast.info    { background: rgba(216,67,21,0.08);  border: 1px solid var(--accent); color: var(--accent); }
     #toast.hidden  { opacity: 0; }
 
     /* ─── DETAIL MODAL ───────────────────────────────────────── */
@@ -307,8 +307,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(3px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s;
@@ -318,12 +318,12 @@
       pointer-events: all;
     }
     #detail-card {
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 10px;
       width: 420px;
       max-width: 90vw;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
       overflow: hidden;
     }
     #detail-header {
@@ -332,6 +332,7 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
+      background: var(--surface);
     }
     #detail-header .detail-title {
       flex: 1;
@@ -357,11 +358,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    .detail-field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
+    .detail-field { display: flex; flex-direction: column; gap: 3px; }
     .detail-field.full { grid-column: 1 / -1; }
     .detail-label {
       font-size: 10px;
@@ -370,10 +367,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .detail-value {
-      font-size: 13px;
-      color: var(--text-dim);
-    }
+    .detail-value { font-size: 13px; color: var(--text-dim); }
     .detail-status {
       display: inline-flex;
       align-items: center;
@@ -381,42 +375,20 @@
       font-size: 12px;
       font-weight: 500;
     }
-    .detail-status .dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-    }
+    .detail-status .dot { width: 7px; height: 7px; border-radius: 50%; }
     #detail-footer {
       padding: 12px 20px;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: flex-end;
+      background: var(--surface);
     }
 
     /* ─── PRINT ──────────────────────────────────────────────── */
     @media print {
       #header, #toolbar, #overlay, #toast, #detail-modal { display: none !important; }
-      #gantt-wrap {
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-      }
-      #gantt_here {
-        width: 100% !important;
-        height: 800px !important;
-      }
-      body { background: #fff !important; }
-      .gantt_container, .gantt_task, .gantt_grid,
-      .gantt_grid_scale, .gantt_task_scale, .gantt_task_bg {
-        background: #fff !important;
-        color: #000 !important;
-      }
-      .gantt_row, .gantt_task_row { border-color: #ddd !important; }
-      .gantt_cell { color: #333 !important; border-color: #ddd !important; }
-      .gantt_grid_head_cell, .gantt_scale_cell { 
-        background: #f5f5f5 !important; 
-        color: #333 !important;
-        border-color: #ddd !important;
-      }
+      #gantt-wrap { position: static !important; width: 100% !important; height: auto !important; }
+      #gantt_here { width: 100% !important; height: 800px !important; }
     }
 
     /* ─── DHTMLX GANTT OVERRIDES ─────────────────────────────── */
@@ -438,30 +410,15 @@
       border-color: var(--border) !important;
       font-family: var(--font-ui) !important;
       font-size: 11px !important;
-      font-weight: 500 !important;
+      font-weight: 600 !important;
       text-transform: uppercase !important;
       letter-spacing: 0.4px !important;
     }
 
-    .gantt_row,
-    .gantt_task_row {
-      border-color: var(--border) !important;
-    }
-
-    .gantt_row:hover,
-    .gantt_task_row:hover {
-      background: var(--surface2) !important;
-    }
-
-    .gantt_row.odd,
-    .gantt_task_row.odd {
-      background: rgba(255,255,255,0.03) !important;
-    }
-
-    .gantt_row,
-    .gantt_task_row {
-      background: var(--bg) !important;
-    }
+    .gantt_row, .gantt_task_row { border-color: var(--border) !important; }
+    .gantt_row:hover, .gantt_task_row:hover { background: #FFF8F6 !important; }
+    .gantt_row.odd, .gantt_task_row.odd { background: var(--surface) !important; }
+    .gantt_row, .gantt_task_row { background: var(--bg) !important; }
 
     .gantt_cell {
       color: var(--text-dim) !important;
@@ -470,92 +427,65 @@
       font-size: 12px !important;
     }
 
-    .gantt_grid_scale,
-    .gantt_task_scale {
-      border-bottom: 1px solid var(--border) !important;
-    }
+    .gantt_grid_scale, .gantt_task_scale { border-bottom: 1px solid var(--border) !important; }
 
-    /* ── Task bars ───────────────────────────────────────────── */
-    .gantt_task_line {
-      border-radius: 3px !important;
-      border: none !important;
-    }
-
-    /* Status colors for regular tasks */
-    .gantt_task_line.status-complete     { background: var(--green) !important; }
-    .gantt_task_line.status-in-progress  { background: var(--blue)  !important; }
-    .gantt_task_line.status-delayed      { background: var(--red)   !important; }
-    .gantt_task_line.status-not-started  { background: #3d444d      !important; }
+    /* Task bars */
+    .gantt_task_line { border-radius: 3px !important; border: none !important; }
+    .gantt_task_line.status-complete     { background: #2E7D32 !important; }
+    .gantt_task_line.status-in-progress  { background: #1565C0 !important; }
+    .gantt_task_line.status-delayed      { background: #C62828 !important; }
+    .gantt_task_line.status-not-started  { background: #9CA3AF !important; }
 
     /* Project / phase summary bars */
     .gantt_task_line.type-project {
-      background: rgba(240,165,0,0.18) !important;
-      border: 1px solid rgba(240,165,0,0.5) !important;
+      background: rgba(216,67,21,0.12) !important;
+      border: 1px solid rgba(216,67,21,0.4) !important;
       border-radius: 2px !important;
     }
 
-    /* Milestone bars — slim, color-coded by status */
+    /* Milestone bars */
     .gantt_task_line.type-milestone-bar {
-      background: #3d444d !important;
-      opacity: 0.9;
+      background: #9CA3AF !important;
       height: 10px !important;
       margin-top: 5px !important;
       border-radius: 2px !important;
     }
-    .gantt_task_line.type-milestone-bar.status-complete    { background: var(--green) !important; }
-    .gantt_task_line.type-milestone-bar.status-in-progress { background: var(--blue)  !important; }
-    .gantt_task_line.type-milestone-bar.status-delayed     { background: var(--red)   !important; }
-    .gantt_task_line.type-milestone-bar.status-not-started { background: #3d444d      !important; }
-    .gantt_task_line.type-milestone-bar .gantt_task_content {
-      font-size: 10px !important;
-      line-height: 10px !important;
-    }
+    .gantt_task_line.type-milestone-bar.status-complete    { background: #2E7D32 !important; }
+    .gantt_task_line.type-milestone-bar.status-in-progress { background: #1565C0 !important; }
+    .gantt_task_line.type-milestone-bar.status-delayed     { background: #C62828 !important; }
+    .gantt_task_line.type-milestone-bar.status-not-started { background: #9CA3AF !important; }
+    .gantt_task_line.type-milestone-bar .gantt_task_content { font-size: 10px !important; line-height: 10px !important; }
 
     /* DHTMLX milestone diamonds */
-    .gantt_task_line.gantt_milestone {
-      background: var(--accent) !important;
-      border-color: var(--accent) !important;
-    }
-    .gantt_task_line.gantt_milestone .gantt_task_content {
-      color: #000 !important;
-      font-weight: 700 !important;
-      font-size: 10px !important;
-    }
+    .gantt_task_line.gantt_milestone { background: var(--accent) !important; border-color: var(--accent) !important; }
+    .gantt_task_line.gantt_milestone .gantt_task_content { color: #fff !important; font-weight: 700 !important; font-size: 10px !important; }
 
     /* Task bar text */
     .gantt_task_content {
-      color: rgba(255,255,255,0.9) !important;
+      color: rgba(255,255,255,0.95) !important;
       font-size: 11px !important;
       font-weight: 500 !important;
       font-family: var(--font-ui) !important;
     }
-    .gantt_task_line.type-project .gantt_task_content {
-      color: var(--accent) !important;
-      font-weight: 600 !important;
-    }
+    .gantt_task_line.type-project .gantt_task_content { color: var(--accent) !important; font-weight: 600 !important; }
 
     /* Progress bar */
-    .gantt_task_progress {
-      border-radius: 3px !important;
-      opacity: 0.25 !important;
-      background: #fff !important;
-    }
+    .gantt_task_progress { border-radius: 3px !important; opacity: 0.2 !important; background: #fff !important; }
 
     /* Links */
     .gantt_task_link .gantt_line_wrapper div { background: var(--border) !important; }
     .gantt_link_arrow { border-color: var(--border) !important; }
 
-    /* Today line */
-    .gantt_task_line.gantt_today { background: rgba(240,165,0,0.08) !important; }
-    .gantt_marker { background: var(--accent) !important; opacity: 0.6; }
-    .gantt_marker_content { color: #000; font-size: 10px; font-weight: 700; padding: 2px 4px; }
+    /* Today marker */
+    .gantt_task_line.gantt_today { background: rgba(216,67,21,0.05) !important; }
+    .gantt_marker { background: var(--accent) !important; opacity: 0.5; }
+    .gantt_marker_content { color: #fff; font-size: 10px; font-weight: 700; padding: 2px 4px; }
 
     /* Scrollbars */
     .gantt_ver_scroll, .gantt_hor_scroll { background: var(--surface) !important; }
     .gantt_scroll_content { background: var(--border) !important; border-radius: 4px !important; }
     .gantt_layout_cell_border { border-color: var(--border) !important; }
 
-    /* Custom scrollbar styling for webkit browsers */
     .gantt_task::-webkit-scrollbar { height: 10px; width: 10px; }
     .gantt_task::-webkit-scrollbar-track { background: var(--surface); }
     .gantt_task::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -566,36 +496,27 @@
 
     /* Tooltip */
     .gantt_tooltip {
-      background: var(--surface2) !important;
+      background: var(--bg) !important;
       border: 1px solid var(--border) !important;
       color: var(--text) !important;
       font-family: var(--font-ui) !important;
       font-size: 12px !important;
       border-radius: var(--radius) !important;
       padding: 10px 14px !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important;
     }
 
-    /* Grid column headers */
     .gantt_grid_head_cell { text-align: left !important; padding-left: 8px !important; }
-
-    /* Grid tree text styling */
     .gantt_tree_content { font-family: var(--font-ui) !important; }
 
-    /* Phase rows — slightly brighter */
-    .gantt_row.gantt_project_row .gantt_cell { 
-      color: var(--accent) !important; 
+    .gantt_row.gantt_project_row .gantt_cell {
+      color: var(--accent) !important;
       font-weight: 600 !important;
     }
 
-    /* Drag handle */
     .gantt_task_drag { opacity: 0; }
     .gantt_task_line:hover .gantt_task_drag { opacity: 1; }
-
-    /* Remove default white/light backgrounds on task lines */
-    .gantt_task_line, .gantt_task_line * {
-      box-shadow: none !important;
-    }
+    .gantt_task_line, .gantt_task_line * { box-shadow: none !important; }
   </style>
 </head>
 <body>
@@ -603,17 +524,16 @@
 <!-- ─── HEADER ──────────────────────────────────────────────── -->
 <div id="header">
   <div class="logo">
-    <!-- Sun icon -->
     <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="14" cy="14" r="5.5" fill="#f0a500"/>
-      <line x1="14" y1="2"  x2="14" y2="5.5"  stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="14" y1="22.5" x2="14" y2="26" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="2"  y1="14" x2="5.5"  y2="14" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="22.5" y1="14" x2="26" y2="14" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="5.5"  y1="5.5"  x2="8"  y2="8"  stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="20"   y1="20"   x2="22.5" y2="22.5" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="22.5" y1="5.5"  x2="20"   y2="8"    stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
-      <line x1="8"    y1="20"   x2="5.5"  y2="22.5" stroke="#f0a500" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="14" cy="14" r="5.5" fill="#D84315"/>
+      <line x1="14" y1="2"  x2="14" y2="5.5"  stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="14" y1="22.5" x2="14" y2="26" stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="2"  y1="14" x2="5.5"  y2="14" stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="22.5" y1="14" x2="26" y2="14" stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="5.5"  y1="5.5"  x2="8"  y2="8"  stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="20"   y1="20"   x2="22.5" y2="22.5" stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="22.5" y1="5.5"  x2="20"   y2="8"    stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8"    y1="20"   x2="5.5"  y2="22.5" stroke="#D84315" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <span class="logo-text">Hannah <span>Solar</span></span>
   </div>
@@ -659,12 +579,11 @@
   <button class="btn" onclick="printGantt()" title="Print">🖨</button>
   <button class="btn primary" onclick="refreshData()">↻ Refresh</button>
 
-  <!-- Legend -->
   <div id="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Complete</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>In Progress</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Delayed</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#3d444d"></div>Not Started</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Complete</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1565C0"></div>In Progress</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#C62828"></div>Delayed</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#9CA3AF"></div>Not Started</div>
     <div class="legend-item"><div class="legend-diamond"></div>Milestone</div>
   </div>
 </div>
@@ -672,8 +591,6 @@
 <!-- ─── GANTT ────────────────────────────────────────────────── -->
 <div id="gantt-wrap">
   <div id="gantt_here"></div>
-
-  <!-- Loading/Error overlay -->
   <div id="overlay">
     <div class="spinner"></div>
     <div class="overlay-title">Loading Projects…</div>
@@ -730,7 +647,6 @@ let currentFilter = 'all';
 async function getAccessToken() {
   if (accessToken) return accessToken;
 
-  // Read token.json generated hourly by GitHub Action — no CORS issues
   const resp = await fetch('./token.json?nocache=' + Date.now());
   if (!resp.ok) throw new Error(`Could not load token.json (HTTP ${resp.status})`);
   const data = await resp.json();
@@ -748,9 +664,7 @@ async function fetchReport(reportLinkName) {
   const url = `${CONFIG.apiDomain}/creator/v2.1/data/${CONFIG.ownerName}/${CONFIG.appLinkName}/report/${reportLinkName}?max_records=200`;
 
   const resp = await fetch(url, {
-    headers: {
-      'Authorization': `Zoho-oauthtoken ${token}`,
-    }
+    headers: { 'Authorization': `Zoho-oauthtoken ${token}` }
   });
 
   if (!resp.ok) {
@@ -789,7 +703,6 @@ async function updateRecord(reportLinkName, recordId, fields) {
 ═══════════════════════════════════════════════════════════════ */
 function parseDate(str) {
   if (!str || str.trim() === '') return null;
-  // Handle Creator format: dd-MMM-yyyy e.g. "16-Mar-2026"
   const creatorFormat = str.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
   if (creatorFormat) {
     const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
@@ -798,7 +711,6 @@ function parseDate(str) {
     const year  = parseInt(creatorFormat[3]);
     if (month !== undefined) return new Date(year, month, day);
   }
-  // Fallback for ISO and other formats
   const d = new Date(str);
   return isNaN(d) ? null : d;
 }
@@ -854,7 +766,6 @@ async function loadData() {
 ═══════════════════════════════════════════════════════════════ */
 function populateProjectFilter() {
   const sel = document.getElementById('project-select');
-  // Clear existing options except the "All" option
   while (sel.options.length > 1) sel.remove(1);
   allProjects.forEach(p => {
     const opt = document.createElement('option');
@@ -878,12 +789,10 @@ function buildGanttData() {
 
   filteredProjects.forEach(project => {
     const pStart = safeDate(project.Start_Date);
-    // Fall back to 6 months from start if no end date provided
     const pEndRaw = project.Projected_End_Date || project.Original_End_Date;
     const pEnd = pEndRaw ? safeDate(pEndRaw) : new Date(safeDate(project.Start_Date).getTime() + 180*24*60*60*1000);
     const pId    = id++;
 
-    // Project row
     tasks_data.push({
       id:        pId,
       text:      project.Project_Name,
@@ -898,7 +807,6 @@ function buildGanttData() {
     });
 
     if (currentView === 'all') {
-      // All Projects view: milestones only under each project
       const projMilestones = allMilestones.filter(m =>
         m.Project && (m.Project.display_value === project.Project_Name || m.Project === project.Project_Name)
       );
@@ -911,7 +819,7 @@ function buildGanttData() {
           id:          mId,
           text:        m.Milestone_Name,
           start_date:  mDate,
-          end_date:    new Date(mDate.getTime() + 86400000), // 1 day
+          end_date:    new Date(mDate.getTime() + 86400000),
           type:        'milestone',
           parent:      pId,
           $source_id:  m.ID,
@@ -923,12 +831,10 @@ function buildGanttData() {
       });
 
     } else {
-      // Per Project view: phases → milestones → tasks
       const projMilestones = allMilestones.filter(m =>
         m.Project && (m.Project.ID === project.ID || m.Project.zc_display_value === project.Project_Name)
       );
 
-      // Group milestones by phase
       const phases = {};
       projMilestones.forEach(m => {
         const ph = m.Phase || 'General';
@@ -937,15 +843,9 @@ function buildGanttData() {
       });
 
       Object.entries(phases).forEach(([phase, phaseMilestones]) => {
-        // Phase group row
         const phaseId = id++;
-        const phaseDates = phaseMilestones
-          .map(m => safeDate(m.Planned_Start_Date))
-          .filter(Boolean);
-        const phaseEndDates = phaseMilestones
-          .map(m => safeDate(m.Planned_End_Date))
-          .filter(Boolean);
-
+        const phaseDates = phaseMilestones.map(m => safeDate(m.Planned_Start_Date)).filter(Boolean);
+        const phaseEndDates = phaseMilestones.map(m => safeDate(m.Planned_End_Date)).filter(Boolean);
         const phaseStart = phaseDates.length   ? new Date(Math.min(...phaseDates))    : pStart;
         const phaseEnd   = phaseEndDates.length ? new Date(Math.max(...phaseEndDates)) : pEnd;
 
@@ -981,13 +881,11 @@ function buildGanttData() {
             $amount:    m.Payment_Amount,
           });
 
-          // Tasks under this milestone
           const milestoneTasks = allTasks.filter(t =>
             t.Milestone && (t.Milestone.ID === m.ID || t.Milestone.zc_display_value === m.Milestone_Name)
           );
 
           milestoneTasks.forEach(t => {
-            // Skip tasks with no dates
             if (!t.Planned_Start_Date || !t.Planned_End_Date) return;
             const tStart = parseDate(t.Planned_Start_Date);
             const tEnd   = parseDate(t.Planned_End_Date);
@@ -1034,25 +932,22 @@ function initGantt() {
   gantt.config.bar_height    = 20;
   gantt.config.min_column_width = 40;
   gantt.config.autosize      = false;
-
-  // Scrolling
   gantt.config.scroll_size   = 10;
   gantt.config.layout = {
     css: 'gantt_container',
     rows: [
       {
         cols: [
-          { view: 'grid',       scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'grid' },
+          { view: 'grid',      scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'grid' },
           { resizer: true, width: 1 },
-          { view: 'timeline',   scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'timeline' },
-          { view: 'scrollbar',  id: 'scrollVer' },
+          { view: 'timeline',  scrollX: 'scrollHor', scrollY: 'scrollVer', id: 'timeline' },
+          { view: 'scrollbar', id: 'scrollVer' },
         ]
       },
       { view: 'scrollbar', id: 'scrollHor', height: 10 }
     ]
   };
 
-  // Grid columns
   gantt.config.columns = [
     {
       name:  'text',
@@ -1094,23 +989,20 @@ function initGantt() {
       template: (task) => {
         if (!task.$status) return '';
         const colors = {
-          'Complete':     '#3fb950',
-          'In Progress':  '#58a6ff',
-          'Delayed':      '#f85149',
-          'Not Started':  '#8b949e',
-          'Blocked':      '#f85149',
-          'In Progress':  '#58a6ff',
+          'Complete':    '#2E7D32',
+          'In Progress': '#1565C0',
+          'Delayed':     '#C62828',
+          'Not Started': '#6B7280',
+          'Blocked':     '#C62828',
         };
-        const c = colors[task.$status] || '#8b949e';
+        const c = colors[task.$status] || '#6B7280';
         return `<span style="color:${c};font-size:11px;font-weight:500;">${task.$status}</span>`;
       }
     },
   ];
 
-  // Zoom: Quarter (default)
   setZoom('quarter', false);
 
-  // Task class by status
   gantt.templates.task_class = (start, end, task) => {
     const classes = [];
     if (task.type === 'project') classes.push('type-project');
@@ -1122,7 +1014,6 @@ function initGantt() {
     return classes.join(' ');
   };
 
-  // Tooltip
   gantt.templates.tooltip_text = (start, end, task) => {
     let html = `<strong style="color:var(--text)">${task.text}</strong><br/>`;
     if (task.$status) html += `<span style="color:var(--muted)">Status:</span> ${task.$status}<br/>`;
@@ -1132,13 +1023,11 @@ function initGantt() {
     return html;
   };
 
-  // Grid row class
   gantt.templates.grid_row_class = (start, end, task) => {
     if (task.type === 'project' && task.$type !== 'phase') return 'gantt_project_row';
     return '';
   };
 
-  // Today marker (only if supported in this build)
   if (typeof gantt.addMarker === 'function') {
     gantt.addMarker({
       start_date: new Date(),
@@ -1148,10 +1037,6 @@ function initGantt() {
     });
   }
 
-  // Drag-to-reschedule disabled — Gantt is read-only
-  // Updates are made in Zoho Creator and synced hourly via GitHub Action
-
-  // ── CLICK HANDLER — open detail modal ───────────────────────
   gantt.attachEvent('onTaskClick', (id, e) => {
     const task = gantt.getTask(id);
     openDetail(task);
@@ -1166,12 +1051,10 @@ function initGantt() {
 ═══════════════════════════════════════════════════════════════ */
 function renderGantt() {
   const { data, links } = buildGanttData();
-
   if (data.length === 0) {
     showOverlayError('No project data found. Add projects in Zoho Creator first.');
     return;
   }
-
   gantt.clearAll();
   gantt.parse({ data, links });
 }
@@ -1181,8 +1064,6 @@ function renderGantt() {
 ═══════════════════════════════════════════════════════════════ */
 function setZoom(level, rerender = true) {
   currentZoom = level;
-
-  // Update button states
   ['month','quarter','year'].forEach(z => {
     document.getElementById(`zoom-${z}`).classList.toggle('active', z === level);
   });
@@ -1206,17 +1087,12 @@ function setZoom(level, rerender = true) {
   } else {
     gantt.config.scales = [
       { unit: 'year',    step: 1, format: '%Y' },
-      { unit: 'quarter', step: 1, format: (d) => {
-          return `Q${Math.floor(d.getMonth()/3)+1}`;
-        }
-      },
+      { unit: 'quarter', step: 1, format: (d) => `Q${Math.floor(d.getMonth()/3)+1}` },
     ];
     gantt.config.min_column_width = 80;
   }
 
-  if (rerender && allProjects.length > 0) {
-    gantt.render();
-  }
+  if (rerender && allProjects.length > 0) gantt.render();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1241,7 +1117,7 @@ function filterProject(value) {
    REFRESH
 ═══════════════════════════════════════════════════════════════ */
 function refreshData() {
-  accessToken = null; // Force token refresh
+  accessToken = null;
   loadData();
 }
 
@@ -1292,23 +1168,17 @@ function showToast(msg, type = 'info') {
    COLLAPSE / EXPAND
 ═══════════════════════════════════════════════════════════════ */
 function collapseAll() {
-  gantt.eachTask(task => {
-    if (task.$has_child) gantt.close(task.id);
-  });
+  gantt.eachTask(task => { if (task.$has_child) gantt.close(task.id); });
 }
 
 function expandAll() {
-  gantt.eachTask(task => {
-    if (task.$has_child) gantt.open(task.id);
-  });
+  gantt.eachTask(task => { if (task.$has_child) gantt.open(task.id); });
 }
 
 /* ═══════════════════════════════════════════════════════════════
    PRINT
 ═══════════════════════════════════════════════════════════════ */
-function printGantt() {
-  window.print();
-}
+function printGantt() { window.print(); }
 
 /* ═══════════════════════════════════════════════════════════════
    DETAIL MODAL
@@ -1317,13 +1187,13 @@ function openDetail(task) {
   if (task.type === 'project' && task.$type !== 'milestone') return;
 
   const statusColors = {
-    'Complete':    '#3fb950',
-    'In Progress': '#58a6ff',
-    'Delayed':     '#f85149',
-    'Not Started': '#8b949e',
-    'Blocked':     '#f85149',
-    'Prospect':    '#8b949e',
-    'Awarded':     '#58a6ff',
+    'Complete':    '#2E7D32',
+    'In Progress': '#1565C0',
+    'Delayed':     '#C62828',
+    'Not Started': '#6B7280',
+    'Blocked':     '#C62828',
+    'Prospect':    '#6B7280',
+    'Awarded':     '#1565C0',
   };
 
   const typeLabel = task.$type === 'milestone' ? '◆ Milestone' :
@@ -1333,14 +1203,13 @@ function openDetail(task) {
   const startStr = task.start_date ? task.start_date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
   const endStr   = task.end_date   ? task.end_date.toLocaleDateString('en-US',   { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
-  // Duration in days
   let duration = '—';
   if (task.start_date && task.end_date) {
     const days = Math.round((task.end_date - task.start_date) / (1000*60*60*24));
     duration = `${days} day${days !== 1 ? 's' : ''}`;
   }
 
-  const statusColor = statusColors[task.$status] || '#8b949e';
+  const statusColor = statusColors[task.$status] || '#6B7280';
   const statusHtml = task.$status
     ? `<span class="detail-status"><span class="dot" style="background:${statusColor}"></span>${task.$status}</span>`
     : '—';
@@ -1350,7 +1219,6 @@ function openDetail(task) {
     : task.$payment === 'Yes' ? 'Yes' : '—';
 
   document.getElementById('detail-title').textContent = task.text;
-
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-field">
       <div class="detail-label">Type</div>
@@ -1406,7 +1274,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   BOOT — wait for all scripts to load
+   BOOT
 ═══════════════════════════════════════════════════════════════ */
 window.addEventListener('load', () => {
   if (typeof gantt === 'undefined') {
