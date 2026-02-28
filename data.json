@@ -23,6 +23,22 @@
   ],
   "milestones": [
     {
+      "Status": "In Progress",
+      "Payment_Triggered": "No",
+      "Project": {
+        "Project_Name": "Test Project 1",
+        "ID": "3466911000000261003",
+        "zc_display_value": "Test Project 1"
+      },
+      "Milestone_Name": "M2",
+      "Planned_End_Date": "03-Apr-2026",
+      "Actual_End_Date": "",
+      "Phase": "Construction",
+      "Planned_Start_Date": "25-Feb-2026",
+      "Payment_Amount": "25000.00",
+      "ID": "3466911000000275003"
+    },
+    {
       "Status": "Not Started",
       "Payment_Triggered": "No",
       "Project": {
@@ -189,5 +205,5 @@
       "Task_Name": "Task 1"
     }
   ],
-  "updated_at": "2026-02-28T11:33:46.745350Z"
+  "updated_at": "2026-02-28T13:48:40.537634Z"
 }
